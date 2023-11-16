@@ -5,7 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="#F7EDED">
+    android:background="#F7EDED"
+    android:orientation="horizontal"
+    android:gravity="center">
 
 
+    <TextView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="logo"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:textSize="30dp"/>
 </LinearLayout>
