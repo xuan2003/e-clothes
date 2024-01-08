@@ -22,6 +22,6 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent1)
                 finish()
             }
-        }, 5000L) //5秒後跳轉頁面
+        }, 3000L) //3秒後跳轉頁面
     }
 }
