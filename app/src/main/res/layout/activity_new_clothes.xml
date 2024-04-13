@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EBE6E2"
-    tools:context=".NewClothes"
+    tools:context=".Match.New_Clothes"
     android:orientation="vertical">
 
 
@@ -41,7 +41,7 @@
             android:layout_weight="1"
             android:text="X  新衣服"
             android:textColor="@color/black"
-            android:textSize="25dp"
+            android:textSize="20dp"
             android:layout_margin="5dp"/>
 
         <TextView
@@ -58,3 +58,4 @@
 
 
 </LinearLayout>
+

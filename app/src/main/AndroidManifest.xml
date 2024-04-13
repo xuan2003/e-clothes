@@ -12,10 +12,13 @@
         android:theme="@style/Theme.Design.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".Match.Match_home"
+            android:name=".Match.New_Match"
             android:exported="false" />
         <activity
-            android:name=".NewClothes"
+            android:name=".Match.New_Clothes"
+            android:exported="false" />
+        <activity
+            android:name=".Match.Match_home"
             android:exported="false" />
         <activity
             android:name=".forget_password"
