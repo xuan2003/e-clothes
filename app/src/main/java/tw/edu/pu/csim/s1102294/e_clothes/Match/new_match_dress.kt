@@ -10,38 +10,33 @@ import android.widget.Button
 import android.widget.ImageView
 import tw.edu.pu.csim.s1102294.e_clothes.R
 
-class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
+class new_match_dress : AppCompatActivity(), GestureDetector.OnGestureListener {
 
     lateinit var gDetector: GestureDetector
     lateinit var imghat: ImageView
-    lateinit var imgclothes: ImageView
-    lateinit var imgpants: ImageView
+    lateinit var imgdress: ImageView
     lateinit var imgshoes: ImageView
-    lateinit var btnDress: Button
+    lateinit var btnNoDress: Button
 
     val hat = arrayOf(R.drawable.c, R.drawable.k, R.drawable.l)
-    val clothes = arrayOf(R.drawable.a, R.drawable.i, R.drawable.j)
-    val pants = arrayOf(R.drawable.b, R.drawable.g, R.drawable.h)
+    val dress = arrayOf(R.drawable.a, R.drawable.i, R.drawable.j)
     val shoes = arrayOf(R.drawable.f, R.drawable.d, R.drawable.e)
     var currentImageIndex1 = 0
     var currentImageIndex2 = 0
     var currentImageIndex3 = 0
-    var currentImageIndex4 = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_new_match)
+        setContentView(R.layout.activity_new_match_dress)
 
         imghat = findViewById(R.id.imghat)
-        imgclothes = findViewById(R.id.imgclothes)
-        imgpants = findViewById(R.id.imgpants)
+        imgdress = findViewById(R.id.imgdress)
         imgshoes = findViewById(R.id.imgshoes)
-        btnDress = findViewById(R.id.btnDress)
+        btnNoDress = findViewById(R.id.btnNoDress)
 
         gDetector = GestureDetector(this, this)
         val userUid = intent.getStringExtra("userUid")
-        btnDress.setOnClickListener {
-            val intent1 = Intent(this, new_match_dress::class.java)
+        btnNoDress.setOnClickListener {
+            val intent1 = Intent(this, New_Match::class.java)
             if (userUid != null) {
                 intent1.putExtra("userUid", userUid)
             }
@@ -92,47 +87,35 @@ class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
                     currentImageIndex1 = hat.size - 1
                 }
             }
-        }else if(Math.abs(velocityX) > Math.abs(velocityY) &&  e1.y >= (pixels+imgclothes.top) && e1.y <= (pixels+imgclothes.bottom)) {
+        }else if(Math.abs(velocityX) > Math.abs(velocityY) &&  e1.y >= (pixels+imgdress.top) && e1.y <= (pixels+imgdress.bottom)) {
             if (e1.x >= e2.x) {
                 currentImageIndex2++
-                if (currentImageIndex2 >= clothes.size) {
+                if (currentImageIndex2 >= dress.size) {
                     currentImageIndex2 = 0
                 }
             } else {
                 currentImageIndex2--
                 if (currentImageIndex2 < 0) {
-                    currentImageIndex2 = clothes.size - 1
+                    currentImageIndex2 = dress.size - 1
                 }
             }
-        }else if(Math.abs(velocityX) > Math.abs(velocityY) &&  e1.y >= (pixels+imgpants.top) && e1.y <= (pixels+imgpants.bottom)) {
+
+        }else if(Math.abs(velocityX) > Math.abs(velocityY) &&  e1.y >= (pixels+imgshoes.top) && e1.y <= (pixels+imgshoes.bottom)) {
             if (e1.x >= e2.x) {
                 currentImageIndex3++
-                if (currentImageIndex3 >= pants.size) {
+                if (currentImageIndex3 >= shoes.size) {
                     currentImageIndex3 = 0
                 }
             } else {
                 currentImageIndex3--
                 if (currentImageIndex3 < 0) {
-                    currentImageIndex3 = pants.size - 1
-                }
-            }
-        }else if(Math.abs(velocityX) > Math.abs(velocityY) &&  e1.y >= (pixels+imgshoes.top) && e1.y <= (pixels+imgshoes.bottom)) {
-            if (e1.x >= e2.x) {
-                currentImageIndex4++
-                if (currentImageIndex4 >= shoes.size) {
-                    currentImageIndex4 = 0
-                }
-            } else {
-                currentImageIndex4--
-                if (currentImageIndex4 < 0) {
-                    currentImageIndex4 = shoes.size - 1
+                    currentImageIndex3 = shoes.size - 1
                 }
             }
         }
         imghat.setImageResource(hat[currentImageIndex1])
-        imgclothes.setImageResource(clothes[currentImageIndex2])
-        imgpants.setImageResource(pants[currentImageIndex3])
-        imgshoes.setImageResource(shoes[currentImageIndex4])
+        imgdress.setImageResource(dress[currentImageIndex2])
+        imgshoes.setImageResource(shoes[currentImageIndex3])
         return true
     }
 
