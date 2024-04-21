@@ -18,6 +18,8 @@ class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
     lateinit var imgpants: ImageView
     lateinit var imgshoes: ImageView
     lateinit var btnDress: Button
+    lateinit var next: ImageView
+    lateinit var previous: ImageView
 
     val hat = arrayOf(R.drawable.c, R.drawable.k, R.drawable.l)
     val clothes = arrayOf(R.drawable.a, R.drawable.i, R.drawable.j)
@@ -37,11 +39,32 @@ class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
         imgpants = findViewById(R.id.imgpants)
         imgshoes = findViewById(R.id.imgshoes)
         btnDress = findViewById(R.id.btnDress)
+        next = findViewById(R.id.next)
+        previous = findViewById(R.id.previous)
 
         gDetector = GestureDetector(this, this)
         val userUid = intent.getStringExtra("userUid")
+
+        previous.setOnClickListener {
+            val intent1 = Intent(this, new_match_dress::class.java)
+            if (userUid != null) {
+                intent1.putExtra("userUid", userUid)
+            }
+            startActivity(intent1)
+            finish()
+        }
+
         btnDress.setOnClickListener {
             val intent1 = Intent(this, new_match_dress::class.java)
+            if (userUid != null) {
+                intent1.putExtra("userUid", userUid)
+            }
+            startActivity(intent1)
+            finish()
+        }
+
+        next.setOnClickListener {
+            val intent1 = Intent(this, Edit_Label::class.java)
             if (userUid != null) {
                 intent1.putExtra("userUid", userUid)
             }
