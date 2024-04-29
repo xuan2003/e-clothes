@@ -4,9 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
-import org.w3c.dom.Text
 import tw.edu.pu.csim.s1102294.e_clothes.Match.Match_home
-import tw.edu.pu.csim.s1102294.e_clothes.Match.New_Clothes
 
 class home : AppCompatActivity() {
     lateinit var Match: TextView

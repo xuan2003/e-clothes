@@ -3,27 +3,44 @@ package tw.edu.pu.csim.s1102294.e_clothes.Match
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import tw.edu.pu.csim.s1102294.e_clothes.R
-import tw.edu.pu.csim.s1102294.e_clothes.home
+import tw.edu.pu.csim.s1102294.e_clothes.change_password
 
-class share_Match : AppCompatActivity() {
+class edit_Profile : AppCompatActivity() {
 
-    lateinit var Home: TextView
-    lateinit var Match: TextView
-
+    lateinit var ok: Button
+    lateinit var txv_change: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_share_match)
-
+        setContentView(R.layout.activity_edit_profile)
 
         val userUid = intent.getStringExtra("userUid")
-        val menu_share = findViewById<ImageView>(R.id.menu_share)
-        menu_share.setOnClickListener {
-            val popup = PopupMenu(this, menu_share)
+
+        ok = findViewById(R.id.ok)
+        ok.setOnClickListener {
+            Toast.makeText(this, "更改成功!", Toast.LENGTH_SHORT).show()
+        }
+
+        txv_change = findViewById(R.id.txv_change)
+        txv_change.setOnClickListener {
+            val intent2 = Intent(this, change_password::class.java)
+            if (userUid != null) {
+                intent2.putExtra("userUid", userUid)
+            }
+            startActivity(intent2)
+            finish()
+        }
+
+
+        val menu = findViewById<ImageView>(R.id.menu)
+        menu.setOnClickListener {
+            val popup = PopupMenu(this, menu)
             popup.menuInflater.inflate(R.menu.menu_share, popup.menu)
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
@@ -49,6 +66,12 @@ class share_Match : AppCompatActivity() {
 //                    }
 //                    R.id.share -> {
 //                        Toast.makeText(this, "分享搭配", Toast.LENGTH_SHORT).show()
+//                        val intent2 = Intent(this, share_Match::class.java)
+//                        if (userUid != null) {
+//                            intent2.putExtra("userUid", userUid)
+//                        }
+//                        startActivity(intent2)
+//                        finish()
 //                        true
 //                    }
 //                    R.id.like -> {
