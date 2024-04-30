@@ -46,7 +46,7 @@ class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
         val userUid = intent.getStringExtra("userUid")
 
         previous.setOnClickListener {
-            val intent1 = Intent(this, new_match_dress::class.java)
+            val intent1 = Intent(this, Match_home::class.java)
             if (userUid != null) {
                 intent1.putExtra("userUid", userUid)
             }
@@ -99,7 +99,7 @@ class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
 
     override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
         val density = Resources.getSystem().displayMetrics.density
-        val dpValue = 120 // 要转换为像素的 dp 值
+        val dpValue = 220 // 要转换为像素的 dp 值
         val pixels = (dpValue * density).toInt()
 
         if (Math.abs(velocityX) > Math.abs(velocityY) &&  e1.y >= (pixels+imghat.top) && e1.y <= (pixels+imghat.bottom)) {

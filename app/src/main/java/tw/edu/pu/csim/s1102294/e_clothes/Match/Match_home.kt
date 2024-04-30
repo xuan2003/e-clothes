@@ -12,8 +12,9 @@ import tw.edu.pu.csim.s1102294.e_clothes.R
 import tw.edu.pu.csim.s1102294.e_clothes.home
 
 class Match_home : AppCompatActivity() {
-    lateinit var Home: TextView
-    lateinit var Match: TextView
+    lateinit var Home: ImageView
+    lateinit var Match: ImageView
+    lateinit var New_Clothes: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_match_home)
@@ -59,6 +60,12 @@ class Match_home : AppCompatActivity() {
                     }
                     R.id.check -> {
                         Toast.makeText(this, "查看搭配", Toast.LENGTH_SHORT).show()
+                        val intent2 = Intent(this, Match_home::class.java)
+                        if (userUid != null) {
+                            intent2.putExtra("userUid", userUid)
+                        }
+                        startActivity(intent2)
+                        finish()
                         true
                     }
                     R.id.share -> {

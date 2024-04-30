@@ -27,117 +27,117 @@
         android:layout_width="match_parent"
         android:layout_height="0.8dp"
         android:background="#AAA09E"
-        android:orientation="vertical"></LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:gravity="bottom"
         android:orientation="vertical">
 
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="歡迎回來!"
-            android:textColor="@color/black"
-            android:textSize="20dp" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="今天有要去哪裡嗎?"
-            android:textColor="@color/black"
-            android:textSize="15dp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView2"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="輸入你的用戶名稱"
-            android:textColor="@color/black"
-            android:textSize="15dp" />
+            android:gravity="bottom"
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/user_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:textSize="13dp"
-            android:theme="@style/MyEditText" />
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="輸入密碼"
-            android:textColor="@color/black"
-            android:textSize="15dp" />
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="歡迎回來!"
+                android:textColor="@color/black"
+                android:textSize="20dp" />
 
-        <EditText
-            android:id="@+id/password"
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="今天有要去哪裡嗎?"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:textSize="13dp"
-            android:theme="@style/MyEditText" />
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="輸入你的用戶名稱"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:textSize="13dp"
+                android:theme="@style/MyEditText" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="輸入密碼"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:textSize="13dp"
+                android:theme="@style/MyEditText" />
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/corners_login"
+                android:text="登入"
+                android:textColor="#67595E"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/txv_register"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="沒有帳號嗎?"
+                android:textColor="#AAA09E" />
+
+            <TextView
+                android:id="@+id/txv_forget"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="忘記密碼"
+                android:textColor="#AAA09E" />
+
+
+        </LinearLayout>
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical">
-
-
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/corners_login"
-            android:text="登入"
-            android:textColor="#67595E"
-            android:textSize="15dp" />
-
-        <TextView
-            android:id="@+id/txv_register"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:clickable="true"
-            android:gravity="center"
-            android:text="沒有帳號嗎?"
-            android:textColor="#AAA09E" />
-
-        <TextView
-            android:id="@+id/txv_forget"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:clickable="true"
-            android:gravity="center"
-            android:text="忘記密碼"
-            android:textColor="#AAA09E" />
-    </LinearLayout>
-
-
-
 
 
 </LinearLayout>

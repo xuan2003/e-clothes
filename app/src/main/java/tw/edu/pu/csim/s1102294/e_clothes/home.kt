@@ -3,13 +3,14 @@ package tw.edu.pu.csim.s1102294.e_clothes
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import tw.edu.pu.csim.s1102294.e_clothes.Match.Match_home
 
 class home : AppCompatActivity() {
-    lateinit var Match: TextView
-    lateinit var New_Clothes: TextView
-    lateinit var Home: TextView
+    lateinit var Match: ImageView
+    lateinit var New_Clothes: ImageView
+    lateinit var Home: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -19,7 +20,7 @@ class home : AppCompatActivity() {
         Home = findViewById(R.id.Home)
         Home.setOnClickListener {
 //            Home.text = ""
-            val intent1 = Intent(this, Match_home::class.java)
+            val intent1 = Intent(this, home::class.java)
             if (userUid != null) {
                 intent1.putExtra("userUid", userUid)
             }
@@ -40,7 +41,6 @@ class home : AppCompatActivity() {
 
         New_Clothes = findViewById(R.id.New_clothes)
         New_Clothes.setOnClickListener {
-            New_Clothes.text = ""
             val intent3 = Intent(this, New_Clothes::class.java)
             if (userUid != null) {
                 intent3.putExtra("userUid", userUid)
