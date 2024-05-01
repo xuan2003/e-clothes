@@ -29,8 +29,8 @@
         <ImageView
             android:id="@+id/menu_share"
             android:layout_width="50dp"
-            android:layout_height="60dp"
-            android:layout_gravity="right"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
             app:srcCompat="@drawable/menu" />
 
 
@@ -94,50 +94,49 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#AAA09E"
+        android:orientation="vertical"></LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:gravity="center"
         android:orientation="horizontal">
-        <TextView
+        <ImageView
             android:id="@+id/Home"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
             android:layout_weight="1"
-            android:text="首頁"
-            android:textSize="20dp"
-            android:textColor="@color/black"/>
+            app:srcCompat="@drawable/home" />
 
-        <TextView
+        <ImageView
             android:id="@+id/Match"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
             android:layout_weight="1"
-            android:text="搭配"
-            android:textSize="20dp"
-            android:textColor="@color/black"
-            android:clickable="true"/>
+            app:srcCompat="@drawable/pencil" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+        <ImageView
+            android:id="@+id/New_clothes"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
             android:layout_weight="1"
-            android:text="新增"
-            android:textSize="20dp"
-            android:textColor="@color/black"/>
+            app:srcCompat="@drawable/plus" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
             android:layout_weight="1"
-            android:text="好友"
-            android:textSize="20dp"
-            android:textColor="@color/black"/>
+            app:srcCompat="@drawable/users" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
             android:layout_weight="1"
-            android:text="設定"
-            android:textSize="20dp"
-            android:textColor="@color/black"/>
+            app:srcCompat="@drawable/settings" />
 
     </LinearLayout>
 

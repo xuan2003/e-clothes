@@ -99,7 +99,7 @@ class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
 
     override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
         val density = Resources.getSystem().displayMetrics.density
-        val dpValue = 220 // 要转换为像素的 dp 值
+        val dpValue = 200 // 要转换为像素的 dp 值
         val pixels = (dpValue * density).toInt()
 
         if (Math.abs(velocityX) > Math.abs(velocityY) &&  e1.y >= (pixels+imghat.top) && e1.y <= (pixels+imghat.bottom)) {

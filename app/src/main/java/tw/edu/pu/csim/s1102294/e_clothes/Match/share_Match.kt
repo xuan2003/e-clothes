@@ -12,8 +12,8 @@ import tw.edu.pu.csim.s1102294.e_clothes.home
 
 class share_Match : AppCompatActivity() {
 
-    lateinit var Home: TextView
-    lateinit var Match: TextView
+    lateinit var Home: ImageView
+    lateinit var Match: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +21,29 @@ class share_Match : AppCompatActivity() {
 
 
         val userUid = intent.getStringExtra("userUid")
+
+        Home = findViewById(R.id.Home)
+        Home.setOnClickListener {
+//            Home.text = ""
+            val intent1 = Intent(this, home::class.java)
+            if (userUid != null) {
+                intent1.putExtra("userUid", userUid)
+            }
+            startActivity(intent1)
+            finish()
+        }
+
+        Match = findViewById(R.id.Match)
+        Match.setOnClickListener {
+//            Home.text = ""
+            val intent1 = Intent(this, Match_home::class.java)
+            if (userUid != null) {
+                intent1.putExtra("userUid", userUid)
+            }
+            startActivity(intent1)
+            finish()
+        }
+
         val menu_share = findViewById<ImageView>(R.id.menu_share)
         menu_share.setOnClickListener {
             val popup = PopupMenu(this, menu_share)
@@ -37,20 +60,26 @@ class share_Match : AppCompatActivity() {
                         finish()
                         true
                     }
-//                    R.id.check -> {
-//                        Toast.makeText(this, "編輯精選穿搭", Toast.LENGTH_SHORT).show()
-//                        val intent2 = Intent(this, edit_Chosen_Match::class.java)
-//                        if (userUid != null) {
-//                            intent2.putExtra("userUid", userUid)
-//                        }
-//                        startActivity(intent2)
-//                        finish()
-//                        true
-//                    }
-//                    R.id.share -> {
-//                        Toast.makeText(this, "分享搭配", Toast.LENGTH_SHORT).show()
-//                        true
-//                    }
+                    R.id.check -> {
+                        Toast.makeText(this, "編輯精選穿搭", Toast.LENGTH_SHORT).show()
+                        val intent2 = Intent(this, edit_Chosen_Match::class.java)
+                        if (userUid != null) {
+                            intent2.putExtra("userUid", userUid)
+                        }
+                        startActivity(intent2)
+                        finish()
+                        true
+                    }
+                    R.id.share -> {
+                        Toast.makeText(this, "分享搭配", Toast.LENGTH_SHORT).show()
+                        val intent2 = Intent(this, share_Match::class.java)
+                        if (userUid != null) {
+                            intent2.putExtra("userUid", userUid)
+                        }
+                        startActivity(intent2)
+                        finish()
+                        true
+                    }
 //                    R.id.like -> {
 //                        Toast.makeText(this, "喜歡的貼文", Toast.LENGTH_SHORT).show()
 //                        val intent2 = Intent(this, Liked_Post::class.java)
