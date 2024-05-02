@@ -1,53 +1,28 @@
-package tw.edu.pu.csim.s1102294.e_clothes.Match
+package tw.edu.pu.csim.s1102294.e_clothes.Community
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
-import tw.edu.pu.csim.s1102294.e_clothes.Community.Liked_Post
+import tw.edu.pu.csim.s1102294.e_clothes.Match.edit_Chosen_Match
+import tw.edu.pu.csim.s1102294.e_clothes.Match.edit_Profile
+import tw.edu.pu.csim.s1102294.e_clothes.Match.share_Match
 import tw.edu.pu.csim.s1102294.e_clothes.R
 import tw.edu.pu.csim.s1102294.e_clothes.Setting
-import tw.edu.pu.csim.s1102294.e_clothes.home
 
-class share_Match : AppCompatActivity() {
-
-    lateinit var Home: ImageView
-    lateinit var Match: ImageView
-
+class Liked_Post : AppCompatActivity() {
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_share_match)
-
+        setContentView(R.layout.activity_liked_post)
 
         val userUid = intent.getStringExtra("userUid")
-
-        Home = findViewById(R.id.Home)
-        Home.setOnClickListener {
-//            Home.text = ""
-            val intent1 = Intent(this, home::class.java)
-            if (userUid != null) {
-                intent1.putExtra("userUid", userUid)
-            }
-            startActivity(intent1)
-            finish()
-        }
-
-        Match = findViewById(R.id.Match)
-        Match.setOnClickListener {
-//            Home.text = ""
-            val intent1 = Intent(this, Match_home::class.java)
-            if (userUid != null) {
-                intent1.putExtra("userUid", userUid)
-            }
-            startActivity(intent1)
-            finish()
-        }
-
-        val menu_share = findViewById<ImageView>(R.id.menu_share)
-        menu_share.setOnClickListener {
-            val popup = PopupMenu(this, menu_share)
+        val menu = findViewById<ImageView>(R.id.menu)
+        menu.setOnClickListener {
+            val popup = PopupMenu(this, menu)
             popup.menuInflater.inflate(R.menu.menu_share, popup.menu)
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {

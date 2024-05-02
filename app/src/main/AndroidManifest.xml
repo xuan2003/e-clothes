@@ -11,6 +11,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.NoActionBar"
         tools:targetApi="31">
+
+        <activity
+            android:name=".Community.Liked_Post"
+            android:exported="false"/>
+
+        <activity
+            android:name=".Setting"
+            android:exported="false" />
         <activity
             android:name=".Match.edit_Chosen_Match"
             android:exported="false" />

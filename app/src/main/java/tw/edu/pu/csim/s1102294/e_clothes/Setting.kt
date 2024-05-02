@@ -1,53 +1,33 @@
-package tw.edu.pu.csim.s1102294.e_clothes.Match
+package tw.edu.pu.csim.s1102294.e_clothes
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Liked_Post
-import tw.edu.pu.csim.s1102294.e_clothes.R
-import tw.edu.pu.csim.s1102294.e_clothes.Setting
-import tw.edu.pu.csim.s1102294.e_clothes.home
+//import tw.edu.pu.csim.s1102294.e_clothes.Community.Liked_Post
+import tw.edu.pu.csim.s1102294.e_clothes.Match.edit_Chosen_Match
+import tw.edu.pu.csim.s1102294.e_clothes.Match.edit_Profile
+import tw.edu.pu.csim.s1102294.e_clothes.Match.share_Match
 
-class share_Match : AppCompatActivity() {
+class Setting : AppCompatActivity() {
 
-    lateinit var Home: ImageView
-    lateinit var Match: ImageView
+    lateinit var btn_Delete: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_share_match)
+        setContentView(R.layout.activity_setting)
 
 
+        btn_Delete = findViewById(R.id.btn_Delete)
         val userUid = intent.getStringExtra("userUid")
-
-        Home = findViewById(R.id.Home)
-        Home.setOnClickListener {
-//            Home.text = ""
-            val intent1 = Intent(this, home::class.java)
-            if (userUid != null) {
-                intent1.putExtra("userUid", userUid)
-            }
-            startActivity(intent1)
-            finish()
-        }
-
-        Match = findViewById(R.id.Match)
-        Match.setOnClickListener {
-//            Home.text = ""
-            val intent1 = Intent(this, Match_home::class.java)
-            if (userUid != null) {
-                intent1.putExtra("userUid", userUid)
-            }
-            startActivity(intent1)
-            finish()
-        }
-
-        val menu_share = findViewById<ImageView>(R.id.menu_share)
-        menu_share.setOnClickListener {
-            val popup = PopupMenu(this, menu_share)
+        val menu = findViewById<ImageView>(R.id.menu)
+        menu.setOnClickListener {
+            val popup = PopupMenu(this, menu)
             popup.menuInflater.inflate(R.menu.menu_share, popup.menu)
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
@@ -83,11 +63,11 @@ class share_Match : AppCompatActivity() {
                     }
                     R.id.like -> {
                         Toast.makeText(this, "喜歡的貼文", Toast.LENGTH_SHORT).show()
-                        val intent2 = Intent(this, Liked_Post::class.java)
+                        val intent3 = Intent(this, Liked_Post::class.java)
                         if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
+                            intent3.putExtra("userUid", userUid)
                         }
-                        startActivity(intent2)
+                        startActivity(intent3)
                         finish()
                         true
                     }
@@ -105,6 +85,33 @@ class share_Match : AppCompatActivity() {
                 }
             }
             popup.show()
+        }
+        btn_Delete.setOnClickListener {
+            AlertDialog.Builder(this@Setting)
+                .setTitle("title")
+                .setMessage("確定刪掉本帳號嗎?")
+                .setPositiveButton("否") { dialog, _ ->
+                    // 可以在这里处理确定按钮的点击事件
+                    dialog.dismiss()
+                }
+                .setNegativeButton("是") { dialog, _ ->
+                    // 可以在这里处理取消按钮的点击事件
+                    AlertDialog.Builder(this)
+                        .setTitle("title")
+                        .setMessage("刪除後將無法復原!!")
+                        .setPositiveButton("否") { dialog2, _ ->
+
+                            dialog2.dismiss()
+                        }
+                        .setNegativeButton("是") { dialog2, _ ->
+                            dialog2.dismiss()
+                            val intent = Intent(this, MainActivity::class.java) // 更換為您的目標Activity
+                            startActivity(intent)
+                        }
+                        .show()
+                    dialog.dismiss()
+                }
+                .show()
         }
     }
 }
