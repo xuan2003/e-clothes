@@ -73,14 +73,14 @@ class Friends : AppCompatActivity() {
                         finish()
                         true
                     }
-                    R.id.check -> {
+                    R.id.edit -> {
                         Toast.makeText(this, "編輯好友", Toast.LENGTH_SHORT).show()
-//                        val intent2 = Intent(this, Match_home::class.java)
-//                        if (userUid != null) {
-//                            intent2.putExtra("userUid", userUid)
-//                        }
-//                        startActivity(intent2)
-//                        finish()
+                        val intent2 = Intent(this, edit_Friends::class.java)
+                        if (userUid != null) {
+                            intent2.putExtra("userUid", userUid)
+                        }
+                        startActivity(intent2)
+                        finish()
                         true
                     }
                     R.id.share -> {
