@@ -116,7 +116,7 @@
             app:srcCompat="@drawable/plus" />
 
         <ImageView
-            android:id="@+id/imageView9"
+            android:id="@+id/Friend"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_weight="1"

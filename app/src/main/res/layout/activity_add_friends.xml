@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#EBE6E2"
-    tools:context=".Match.edit_Chosen_Match">
+    android:orientation="vertical"
+    tools:context=".Community.add_Friends">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:gravity="center"
         android:orientation="horizontal">
 
         <ImageView
@@ -27,7 +26,7 @@
             android:layout_weight="1" />
 
         <ImageView
-            android:id="@+id/menu"
+            android:id="@+id/menu_friend"
             android:layout_width="50dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
@@ -46,64 +45,61 @@
         android:id="@+id/textView11"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="20dp"
         android:layout_margin="10dp"
-        android:text="選擇你想放在精選的穿搭吧!" />
+        android:text="新增好友"
+        android:textColor="@color/black"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="認識更多人，尋找更多新想法"
+        android:textColor="@color/black"
+        android:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:textColor="@color/black"
+        android:textSize="15dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/textView13"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="第一眼認識的你是什麼樣子呢?"
-            android:textColor="@color/black"
-            android:textSize="15dp" />
-
-        <TextView
-            android:id="@+id/pages"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textColor="@color/black"
-            android:text="(1/5)" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="match_parent"
-        android:layout_height="25dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#AAA09E"
-            android:orientation="vertical"></LinearLayout>
-
         <TextView
+            android:id="@+id/textView9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="陰天?"
-            android:textColor="@color/black"
-            android:textSize="15dp" />
+            android:text="輸入好友名稱"
+            android:textColor="@color/black" />
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/friend_name"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#AAA09E"
-            android:orientation="vertical"></LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:textSize="13dp"
+            android:theme="@style/MyEditText" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/corners_login"
+            android:textColor="@color/black"
+            android:text="搜尋" />
+
+
     </LinearLayout>
 
     <LinearLayout
@@ -140,7 +136,7 @@
             app:srcCompat="@drawable/plus" />
 
         <ImageView
-            android:id="@+id/imageView9"
+            android:id="@+id/Friend"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_weight="1"
@@ -153,8 +149,6 @@
             android:layout_weight="1"
             app:srcCompat="@drawable/settings" />
 
-
     </LinearLayout>
-
 
 </LinearLayout>

@@ -50,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="歡迎回來!"
+                android:layout_margin="10dp"
                 android:textColor="@color/black"
                 android:textSize="20dp" />
 
@@ -59,6 +60,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="今天有要去哪裡嗎?"
+                android:layout_margin="10dp"
                 android:textColor="@color/black"
                 android:textSize="15dp" />
         </LinearLayout>

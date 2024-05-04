@@ -3,24 +3,33 @@ package tw.edu.pu.csim.s1102294.e_clothes.Match
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
+import org.w3c.dom.Text
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Liked_Post
 import tw.edu.pu.csim.s1102294.e_clothes.R
 import tw.edu.pu.csim.s1102294.e_clothes.Setting
 import tw.edu.pu.csim.s1102294.e_clothes.home
 
-class edit_Chosen_Match : AppCompatActivity() {
+class edit_Chosen_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
 
     lateinit var Home: ImageView
     lateinit var Match: ImageView
+    lateinit var gDetector: GestureDetector
+    lateinit var pages: TextView
+    private var count: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_chosen_match)
         val userUid = intent.getStringExtra("userUid")
 
+        gDetector = GestureDetector(this, this)
+        pages = findViewById(R.id.pages)
         Home = findViewById(R.id.Home)
         Home.setOnClickListener {
 //            Home.text = ""
@@ -104,5 +113,57 @@ class edit_Chosen_Match : AppCompatActivity() {
             }
             popup.show()
         }
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        gDetector.onTouchEvent(event)
+        return true
+    }
+    override fun onDown(p0: MotionEvent): Boolean {
+        return true
+    }
+
+    override fun onShowPress(p0: MotionEvent) {
+    }
+
+    override fun onSingleTapUp(p0: MotionEvent): Boolean {
+        return true
+    }
+
+    override fun onScroll(p0: MotionEvent, p1: MotionEvent, p2: Float, p3: Float): Boolean {
+        return true
+    }
+
+    override fun onLongPress(p0: MotionEvent) {
+
+    }
+
+    override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+        if (e1.x >= e2.x) {
+            count++
+            if (count > 5) {
+                count = 1
+            }
+        }
+        else{
+            count --
+            if (count < 1){
+                count = 5
+            }
+        }
+
+        if (count == 1) {
+            pages.text = "(1/5)"
+        } else if(count == 2) {
+            pages.text = "(2/5)"
+        } else if(count == 3) {
+            pages.text = "(3/5)"
+        } else if(count == 4) {
+            pages.text = "(4/5)"
+        } else {
+            pages.text = "(5/5)"
+        }
+
+        return true
     }
 }
