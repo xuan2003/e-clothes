@@ -38,31 +38,21 @@ class new_match_dress : AppCompatActivity(), GestureDetector.OnGestureListener {
         previous = findViewById(R.id.previous)
 
         gDetector = GestureDetector(this, this)
-        val userUid = intent.getStringExtra("userUid")
 
         previous.setOnClickListener {
             val intent1 = Intent(this, Match_home::class.java)
-            if (userUid != null) {
-                intent1.putExtra("userUid", userUid)
-            }
             startActivity(intent1)
             finish()
         }
 
         btnNoDress.setOnClickListener {
             val intent1 = Intent(this, New_Match::class.java)
-            if (userUid != null) {
-                intent1.putExtra("userUid", userUid)
-            }
             startActivity(intent1)
             finish()
         }
 
         next.setOnClickListener {
             val intent1 = Intent(this, Edit_Label::class.java)
-            if (userUid != null) {
-                intent1.putExtra("userUid", userUid)
-            }
             startActivity(intent1)
             finish()
         }

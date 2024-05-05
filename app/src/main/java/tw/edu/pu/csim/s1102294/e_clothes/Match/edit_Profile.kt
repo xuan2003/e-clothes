@@ -21,8 +21,6 @@ class edit_Profile : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
-        val userUid = intent.getStringExtra("userUid")
-
         ok = findViewById(R.id.ok)
         ok.setOnClickListener {
             Toast.makeText(this, "更改成功!", Toast.LENGTH_SHORT).show()
@@ -31,9 +29,6 @@ class edit_Profile : AppCompatActivity() {
         txv_change = findViewById(R.id.txv_change)
         txv_change.setOnClickListener {
             val intent2 = Intent(this, change_password::class.java)
-            if (userUid != null) {
-                intent2.putExtra("userUid", userUid)
-            }
             startActivity(intent2)
             finish()
         }
@@ -48,9 +43,6 @@ class edit_Profile : AppCompatActivity() {
                     R.id.add -> {
                         Toast.makeText(this, "編輯個人資料", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, edit_Profile::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true
@@ -58,9 +50,6 @@ class edit_Profile : AppCompatActivity() {
                     R.id.check -> {
                         Toast.makeText(this, "編輯精選穿搭", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, edit_Chosen_Match::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true
@@ -68,9 +57,6 @@ class edit_Profile : AppCompatActivity() {
                     R.id.share -> {
                         Toast.makeText(this, "分享搭配", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, share_Match::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true
@@ -78,9 +64,6 @@ class edit_Profile : AppCompatActivity() {
                     R.id.like -> {
                         Toast.makeText(this, "喜歡的貼文", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, Liked_Post::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true
@@ -88,9 +71,6 @@ class edit_Profile : AppCompatActivity() {
                     R.id.settings -> {
                         Toast.makeText(this, "設定", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, Setting::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true

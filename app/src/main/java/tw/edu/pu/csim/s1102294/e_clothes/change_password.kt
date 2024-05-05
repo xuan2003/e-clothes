@@ -13,15 +13,10 @@ class change_password : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_change_password)
 
-        val userUid = intent.getStringExtra("userUid")
-
         btn_submit = findViewById(R.id.btn_submit)
         btn_submit.setOnClickListener {
             Toast.makeText(this, "更改成功!", Toast.LENGTH_SHORT).show()
             val intent2 = Intent(this, edit_Profile::class.java)
-            if (userUid != null) {
-                intent2.putExtra("userUid", userUid)
-            }
             startActivity(intent2)
             finish()
         }

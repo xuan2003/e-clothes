@@ -13,8 +13,6 @@ class register : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        val userUid = intent.getStringExtra("userUid")
-
         btn_register = findViewById(R.id.btn_register)
         btn_register.setOnClickListener {
 
@@ -23,9 +21,6 @@ class register : AppCompatActivity() {
             timer.schedule(object : TimerTask() {
                 override fun run() {
                     val intent1 = Intent(this@register, login::class.java)
-                    if (userUid != null) {
-                        intent1.putExtra("userUid", userUid)
-                    }
                     startActivity(intent1)
                     finish()
                 }

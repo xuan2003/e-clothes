@@ -20,7 +20,6 @@ class Edit_Label : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_label)
 
-        val userUid = intent.getStringExtra("userUid")
         finish = findViewById(R.id.finish)
         finish.setOnClickListener {
             Toast.makeText(this, "搭配完成", Toast.LENGTH_SHORT).show()
@@ -28,9 +27,6 @@ class Edit_Label : AppCompatActivity() {
             CoroutineScope(Dispatchers.Main).launch {
                 delay(1000)
                 val intent1 = Intent(this@Edit_Label, Match_home::class.java)
-                if (userUid != null) {
-                    intent1.putExtra("userUid", userUid)
-                }
                 startActivity(intent1)
                 finish()
             }
@@ -38,9 +34,6 @@ class Edit_Label : AppCompatActivity() {
         previous = findViewById(R.id.previous)
         previous.setOnClickListener {
             val intent1 = Intent(this, New_Match::class.java)
-            if (userUid != null) {
-                intent1.putExtra("userUid", userUid)
-            }
             startActivity(intent1)
             finish()
         }

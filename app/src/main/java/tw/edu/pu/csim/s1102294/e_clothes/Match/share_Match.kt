@@ -20,16 +20,10 @@ class share_Match : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_share_match)
 
-
-        val userUid = intent.getStringExtra("userUid")
-
         Home = findViewById(R.id.Home)
         Home.setOnClickListener {
 //            Home.text = ""
             val intent1 = Intent(this, home::class.java)
-            if (userUid != null) {
-                intent1.putExtra("userUid", userUid)
-            }
             startActivity(intent1)
             finish()
         }
@@ -38,9 +32,6 @@ class share_Match : AppCompatActivity() {
         Match.setOnClickListener {
 //            Home.text = ""
             val intent1 = Intent(this, Match_home::class.java)
-            if (userUid != null) {
-                intent1.putExtra("userUid", userUid)
-            }
             startActivity(intent1)
             finish()
         }
@@ -54,9 +45,6 @@ class share_Match : AppCompatActivity() {
                     R.id.add -> {
                         Toast.makeText(this, "編輯個人資料", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, edit_Profile::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true
@@ -64,9 +52,6 @@ class share_Match : AppCompatActivity() {
                     R.id.check -> {
                         Toast.makeText(this, "編輯精選穿搭", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, edit_Chosen_Match::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true
@@ -74,9 +59,6 @@ class share_Match : AppCompatActivity() {
                     R.id.share -> {
                         Toast.makeText(this, "分享搭配", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, share_Match::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true
@@ -84,9 +66,6 @@ class share_Match : AppCompatActivity() {
                     R.id.like -> {
                         Toast.makeText(this, "喜歡的貼文", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, Liked_Post::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true
@@ -94,9 +73,6 @@ class share_Match : AppCompatActivity() {
                     R.id.settings -> {
                         Toast.makeText(this, "設定", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, Setting::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true

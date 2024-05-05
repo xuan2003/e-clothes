@@ -24,7 +24,7 @@ class Setting : AppCompatActivity() {
 
 
         btn_Delete = findViewById(R.id.btn_Delete)
-        val userUid = intent.getStringExtra("userUid")
+
         val menu = findViewById<ImageView>(R.id.menu)
         menu.setOnClickListener {
             val popup = PopupMenu(this, menu)
@@ -34,9 +34,6 @@ class Setting : AppCompatActivity() {
                     R.id.add -> {
                         Toast.makeText(this, "編輯個人資料", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, edit_Profile::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true
@@ -44,9 +41,6 @@ class Setting : AppCompatActivity() {
                     R.id.check -> {
                         Toast.makeText(this, "編輯精選穿搭", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, edit_Chosen_Match::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true
@@ -54,9 +48,6 @@ class Setting : AppCompatActivity() {
                     R.id.share -> {
                         Toast.makeText(this, "分享搭配", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, share_Match::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true
@@ -64,9 +55,6 @@ class Setting : AppCompatActivity() {
                     R.id.like -> {
                         Toast.makeText(this, "喜歡的貼文", Toast.LENGTH_SHORT).show()
                         val intent3 = Intent(this, Liked_Post::class.java)
-                        if (userUid != null) {
-                            intent3.putExtra("userUid", userUid)
-                        }
                         startActivity(intent3)
                         finish()
                         true
@@ -74,9 +62,6 @@ class Setting : AppCompatActivity() {
                     R.id.settings -> {
                         Toast.makeText(this, "設定", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, Setting::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true

@@ -15,8 +15,6 @@ class forget_password : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forget_password)
 
-        val userUid = intent.getStringExtra("userUid")
-
         btn_submit = findViewById(R.id.btn_submit)
         btn_submit.setOnClickListener {
 
@@ -25,9 +23,6 @@ class forget_password : AppCompatActivity() {
             timer.schedule(object : TimerTask() {
                 override fun run() {
                     val intent1 = Intent(this@forget_password, login::class.java)
-                    if (userUid != null) {
-                        intent1.putExtra("userUid", userUid)
-                    }
                     startActivity(intent1)
                     finish()
                 }

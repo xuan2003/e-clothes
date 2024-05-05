@@ -9,7 +9,7 @@
         android:title="編輯好友"
         android:theme="@style/MenuStyle"/>
     <item
-        android:id="@+id/friends_invit"
+        android:id="@+id/invit"
         android:title="查看好友邀請"
         android:theme="@style/MenuStyle"/>
 </menu>

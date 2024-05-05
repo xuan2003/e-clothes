@@ -23,14 +23,10 @@ class Friends : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_friends)
 
-        val userUid = intent.getStringExtra("userUid")
         Home = findViewById(R.id.Home)
         Home.setOnClickListener {
 //            Home.text = ""
             val intent1 = Intent(this, home::class.java)
-            if (userUid != null) {
-                intent1.putExtra("userUid", userUid)
-            }
             startActivity(intent1)
             finish()
         }
@@ -39,9 +35,6 @@ class Friends : AppCompatActivity() {
         Match.setOnClickListener {
 //            Home.text = ""
             val intent1 = Intent(this, Match_home::class.java)
-            if (userUid != null) {
-                intent1.putExtra("userUid", userUid)
-            }
             startActivity(intent1)
             finish()
         }
@@ -50,9 +43,6 @@ class Friends : AppCompatActivity() {
         Friend.setOnClickListener {
 //            Home.text = ""
             val intent1 = Intent(this, Friends::class.java)
-            if (userUid != null) {
-                intent1.putExtra("userUid", userUid)
-            }
             startActivity(intent1)
             finish()
         }
@@ -66,9 +56,6 @@ class Friends : AppCompatActivity() {
                     R.id.add -> {
                         Toast.makeText(this, "新增好友", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, add_Friends::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true
@@ -76,21 +63,15 @@ class Friends : AppCompatActivity() {
                     R.id.edit -> {
                         Toast.makeText(this, "編輯好友", Toast.LENGTH_SHORT).show()
                         val intent2 = Intent(this, edit_Friends::class.java)
-                        if (userUid != null) {
-                            intent2.putExtra("userUid", userUid)
-                        }
                         startActivity(intent2)
                         finish()
                         true
                     }
-                    R.id.share -> {
+                    R.id.invit -> {
                         Toast.makeText(this, "查看好友邀請", Toast.LENGTH_SHORT).show()
-//                        val intent2 = Intent(this, share_Match::class.java)
-//                        if (userUid != null) {
-//                            intent2.putExtra("userUid", userUid)
-//                        }
-//                        startActivity(intent2)
-//                        finish()
+                        val intent2 = Intent(this, Friend_Invite::class.java)
+                        startActivity(intent2)
+                        finish()
                         true
                     }
                     else -> false

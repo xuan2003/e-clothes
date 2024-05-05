@@ -18,8 +18,6 @@ class login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login)
 
-        val userUid = intent.getStringExtra("userUid")
-
         btn_login = findViewById(R.id.btn_login)
         btn_login.setOnClickListener {
             Toast.makeText(this, "登入成功", Toast.LENGTH_SHORT).show()
@@ -27,9 +25,6 @@ class login : AppCompatActivity() {
             timer.schedule(object : TimerTask() {
                 override fun run() {
                     val intent1 = Intent(this@login, home::class.java)
-                    if (userUid != null) {
-                        intent1.putExtra("userUid", userUid)
-                    }
                     startActivity(intent1)
                     finish()
                 }
@@ -38,9 +33,6 @@ class login : AppCompatActivity() {
         txv_register = findViewById(R.id.txv_register)
         txv_register.setOnClickListener {
             val intent2 = Intent(this, register::class.java)
-            if (userUid != null) {
-                intent2.putExtra("userUid", userUid)
-            }
             startActivity(intent2)
             finish()
         }
@@ -48,9 +40,6 @@ class login : AppCompatActivity() {
         txv_forget = findViewById(R.id.txv_forget)
         txv_forget.setOnClickListener {
             val intent3 = Intent(this, forget_password::class.java)
-            if (userUid != null) {
-                intent3.putExtra("userUid", userUid)
-            }
             startActivity(intent3)
             finish()
         }
