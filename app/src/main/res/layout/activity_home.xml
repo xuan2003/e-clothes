@@ -109,7 +109,7 @@
             app:srcCompat="@drawable/pencil" />
 
         <ImageView
-            android:id="@+id/New_clothes"
+            android:id="@+id/Clothes"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_weight="1"
@@ -123,7 +123,7 @@
             app:srcCompat="@drawable/users" />
 
         <ImageView
-            android:id="@+id/imageView8"
+            android:id="@+id/Personal_page"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_weight="1"
