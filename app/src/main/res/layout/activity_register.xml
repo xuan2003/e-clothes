@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
                 android:ems="10"
-                android:inputType="textPersonName"
+                android:inputType="textPassword"
                 android:textSize="13dp"
                 android:theme="@style/MyEditText" />
             <TextView
@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
                 android:ems="10"
-                android:inputType="textPersonName"
+                android:inputType="textPassword"
                 android:textSize="13dp"
                 android:theme="@style/MyEditText" />
             <TextView
