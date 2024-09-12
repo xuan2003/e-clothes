@@ -24,6 +24,8 @@ import tw.edu.pu.csim.s1102294.e_clothes.clothes.New_clothes
 import tw.edu.pu.csim.s1102294.e_clothes.weather.RetrofitClient
 import tw.edu.pu.csim.s1102294.e_clothes.weather.WeatherResponse
 import tw.edu.pu.csim.s1102294.e_clothes.weather.WeatherService
+import android.util.Log
+
 
 class home : AppCompatActivity() {
     lateinit var Match: ImageView
@@ -92,7 +94,7 @@ class home : AppCompatActivity() {
             startActivity(intent1)
             finish()
         }
-        
+
         Personal_page = findViewById(R.id.Personal_page)
         Personal_page.setOnClickListener {
             val intent1 = Intent(this, Personal_Page::class.java)
@@ -191,7 +193,7 @@ class home : AppCompatActivity() {
     }
 
     private fun getWeather(locationCity: String) {
-        val authorization = "CWA-CF103A5F-5E9A-4C42-B4EA-5D419B950E6B"
+        val authorization = "CWA-A017743C-C744-4C39-9D6B-4CA2D7E6E086"
 
         weatherService.getWeatherApi(authorization, locationCity)
             .enqueue(object : Callback<WeatherResponse> {
@@ -199,27 +201,41 @@ class home : AppCompatActivity() {
                     call: Call<WeatherResponse>,
                     response: Response<WeatherResponse>
                 ) {
+                    // Log the response body to debug
+                    Log.d("WeatherResponse", "Response Body: ${response.body()}")
+
                     if (response.isSuccessful) {
                         val weatherResponse = response.body()
-                        val sb = StringBuilder()
-                        weatherResponse?.records?.location?.forEach { location ->
-                            if (location.locationName == locationCity) {
-                                sb.append("Location: ${location.locationName}\n")
-                                location.weatherElement.forEach { weatherElement ->
-                                    sb.append("Element Name: ${weatherElement.elementName}\n")
-                                    weatherElement.time.forEach { time ->
-                                        val parameterName = time.parameter.parameterName
-                                        val parameterUnit = time.parameter.parameterUnit
-                                        val startTime = time.startTime
-                                        val endTime = time.endTime
-                                        sb.append("Start Time: $startTime, End Time: $endTime\n")
-                                        sb.append("Parameter Name: $parameterName, Parameter Unit: $parameterUnit\n")
+                        if (weatherResponse != null) {
+                            val sb = StringBuilder()
+                            val locations = weatherResponse.records?.location
+                            if (locations != null) {
+                                locations.forEach { location ->
+                                    if (location.locationName == locationCity) {
+                                        sb.append("Location: ${location.locationName}\n")
+                                        location.weatherElement.forEach { weatherElement ->
+                                            sb.append("Element Name: ${weatherElement.elementName}\n")
+                                            weatherElement.time.forEach { time ->
+                                                val parameterName = time.parameter.parameterName
+                                                val parameterUnit = time.parameter.parameterUnit
+                                                val startTime = time.startTime
+                                                val endTime = time.endTime
+                                                sb.append("Start Time: $startTime, End Time: $endTime\n")
+                                                sb.append("Parameter Name: $parameterName, Parameter Unit: $parameterUnit\n")
+                                            }
+                                        }
                                     }
                                 }
+                            } else {
+                                sb.append("No location data available.")
                             }
-                        }
-                        runOnUiThread {
-                            textView.text = sb.toString()
+                            runOnUiThread {
+                                textView.text = sb.toString()
+                            }
+                        } else {
+                            runOnUiThread {
+                                textView.text = "Weather response body is null."
+                            }
                         }
                     } else {
                         runOnUiThread {
@@ -235,6 +251,7 @@ class home : AppCompatActivity() {
                 }
             })
     }
+
 
     private fun checkPermission() {
         val permission = ContextCompat.checkSelfPermission(

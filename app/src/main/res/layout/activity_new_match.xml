@@ -90,7 +90,7 @@
             <ImageView
                 android:id="@+id/imghat"
                 android:layout_width="wrap_content"
-                android:layout_height="100dp"
+                android:layout_height="200dp"
                 app:srcCompat="@drawable/c" />
 
             <TextView
@@ -101,7 +101,7 @@
             <ImageView
                 android:id="@+id/imgclothes"
                 android:layout_width="wrap_content"
-                android:layout_height="120dp"
+                android:layout_height="220dp"
                 app:srcCompat="@drawable/a" />
 
             <TextView
@@ -112,7 +112,7 @@
             <ImageView
                 android:id="@+id/imgpants"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="220dp"
                 app:srcCompat="@drawable/b" />
 
             <TextView
@@ -123,7 +123,7 @@
             <ImageView
                 android:id="@+id/imgshoes"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="200dp"
                 app:srcCompat="@drawable/f" />
 
         </LinearLayout>

@@ -90,34 +90,34 @@
             <ImageView
                 android:id="@+id/imghat"
                 android:layout_width="wrap_content"
-                android:layout_height="100dp"
+                android:layout_height="250dp"
                 app:srcCompat="@drawable/c" />
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
+<!--            <TextView-->
+<!--                android:id="@+id/textView"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="10dp" />-->
 
             <ImageView
                 android:id="@+id/imgdress"
                 android:layout_width="wrap_content"
-                android:layout_height="240dp"
+                android:layout_height="330dp"
                 app:srcCompat="@drawable/a" />
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
+<!--            <TextView-->
+<!--                android:id="@+id/textView2"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="10dp" />-->
 
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
+<!--            <TextView-->
+<!--                android:id="@+id/textView3"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="10dp" />-->
 
             <ImageView
                 android:id="@+id/imgshoes"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="290dp"
                 app:srcCompat="@drawable/f" />
 
         </LinearLayout>
