@@ -8,6 +8,8 @@ import android.location.LocationListener
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.method.ScrollingMovementMethod
 import android.widget.ImageView
 import android.widget.TextView
@@ -25,6 +27,9 @@ import tw.edu.pu.csim.s1102294.e_clothes.weather.RetrofitClient
 import tw.edu.pu.csim.s1102294.e_clothes.weather.WeatherResponse
 import tw.edu.pu.csim.s1102294.e_clothes.weather.WeatherService
 import android.util.Log
+import android.view.View
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class home : AppCompatActivity() {
@@ -38,6 +43,22 @@ class home : AppCompatActivity() {
     private var locationManager: LocationManager? = null
     private lateinit var weatherService: WeatherService
     lateinit var textView: TextView
+
+    lateinit var today_morning_time: TextView
+    lateinit var today_morning_weather: ImageView
+    lateinit var today_morning_temperature: TextView
+
+    lateinit var today_night_time: TextView
+    lateinit var today_night_weather: ImageView
+    lateinit var today_night_temperature: TextView
+
+    lateinit var tomorrow_morning_time: TextView
+    lateinit var tomorrow_morning_weather: ImageView
+    lateinit var tomorrow_morning_temperature: TextView
+
+    lateinit var tomorrow_night_time: TextView
+    lateinit var tomorrow_night_weather: ImageView
+    lateinit var tomorrow_night_temperature: TextView
 
     private val takePictureResult =
         registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
@@ -60,6 +81,16 @@ class home : AppCompatActivity() {
         }
 
 
+    }
+
+
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var locationCity: String
+    private val updateWeatherRunnable = object : Runnable {
+        override fun run() {
+            getWeather(locationCity)
+            handler.postDelayed(this, 3600000) // 1 hour
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,6 +149,22 @@ class home : AppCompatActivity() {
         } else {
             startLocationUpdates()
         }
+
+        today_morning_time = findViewById(R.id.today_morning_time)
+        today_morning_weather = findViewById(R.id.today_morning_weather)
+        today_morning_temperature = findViewById(R.id.today_morning_temperature)
+
+        today_night_time = findViewById(R.id.today_night_time)
+        today_night_weather = findViewById(R.id.today_night_weather)
+        today_night_temperature = findViewById(R.id.today_night_temperature)
+
+        tomorrow_morning_time = findViewById(R.id.tomorrow_morning_time)
+        tomorrow_morning_weather = findViewById(R.id.tomorrow_morning_weather)
+        tomorrow_morning_temperature = findViewById(R.id.tomorrow_morning_temperature)
+
+        tomorrow_night_time = findViewById(R.id.tomorrow_night_time)
+        tomorrow_night_weather = findViewById(R.id.tomorrow_night_weather)
+        tomorrow_night_temperature = findViewById(R.id.tomorrow_night_temperature)
         weatherService = RetrofitClient.myWeatherApi().create(WeatherService::class.java)
     }
 
@@ -194,63 +241,87 @@ class home : AppCompatActivity() {
 
     private fun getWeather(locationCity: String) {
         val authorization = "CWA-A017743C-C744-4C39-9D6B-4CA2D7E6E086"
-
         weatherService.getWeatherApi(authorization, locationCity)
             .enqueue(object : Callback<WeatherResponse> {
                 override fun onResponse(
                     call: Call<WeatherResponse>,
                     response: Response<WeatherResponse>
                 ) {
-                    // Log the response body to debug
-                    Log.d("WeatherResponse", "Response Body: ${response.body()}")
-
                     if (response.isSuccessful) {
                         val weatherResponse = response.body()
                         if (weatherResponse != null) {
-                            val sb = StringBuilder()
                             val locations = weatherResponse.records?.location
-                            if (locations != null) {
-                                locations.forEach { location ->
-                                    if (location.locationName == locationCity) {
-                                        sb.append("Location: ${location.locationName}\n")
-                                        location.weatherElement.forEach { weatherElement ->
-                                            sb.append("Element Name: ${weatherElement.elementName}\n")
-                                            weatherElement.time.forEach { time ->
-                                                val parameterName = time.parameter.parameterName
-                                                val parameterUnit = time.parameter.parameterUnit
-                                                val startTime = time.startTime
-                                                val endTime = time.endTime
-                                                sb.append("Start Time: $startTime, End Time: $endTime\n")
-                                                sb.append("Parameter Name: $parameterName, Parameter Unit: $parameterUnit\n")
+                            locations?.forEach { location ->
+                                if (location.locationName == locationCity) {
+                                    // Process weather elements
+                                    location.weatherElement.forEach { weatherElement ->
+                                        val isMorning = weatherElement.time.any {
+                                            it.startTime.substring(11, 13).toInt() == 6
+                                        }
+                                        weatherElement.time.forEach { time ->
+                                            val startTime = time.startTime
+                                            val weatherCondition = time.parameter.parameterName
+                                            val temperature = time.parameter.parameterName
+//                                            val startHour = startTime.substring(11, 13).toInt()
+
+
+                                            // Log for debugging
+                                            Log.d("WeatherDebug", "Start Time: $startTime")
+
+                                            // Handle today's 06:00 weather
+                                            if (startTime.startsWith(getCurrentDate()) && startTime.substring(11, 16) == "06:00") {
+//                                                today_morning_time.text = "123"
+                                                today_morning_time.text = "Today 6 AM: ${startTime.substring(0, 16)}"
+                                                today_morning_temperature.text = "Temperature: $temperature ˚C"
+                                                setWeatherImage(today_morning_weather, weatherCondition)
+                                            }
+
+                                            if (startTime.substring(0, 10) == getCurrentDate() && startTime.substring(11, 16) == "18:00") {
+                                                today_night_time.text = "${startTime.substring(0, 16)}"
+                                                today_night_temperature.text = "$temperature ˚C"
+                                                setWeatherImage(today_night_weather, weatherCondition)
+                                            }
+
+                                            if (startTime.substring(0, 10) == getNextDate() && startTime.substring(11, 16) == "06:00") {
+                                                tomorrow_morning_time.text = "${startTime.substring(0, 16)}"
+                                                tomorrow_morning_temperature.text = "$temperature ˚C"
+                                                setWeatherImage(tomorrow_morning_weather, weatherCondition)
+                                            }
+                                            if (startTime.substring(0, 10) == getNextDate() && startTime.substring(11, 16) == "18:00") {
+                                                tomorrow_night_time.text = "${startTime.substring(0, 16)}"
+                                                tomorrow_night_temperature.text = "$temperature ˚C"
+                                                setWeatherImage(tomorrow_night_weather, weatherCondition)
                                             }
                                         }
                                     }
+
                                 }
-                            } else {
-                                sb.append("No location data available.")
-                            }
-                            runOnUiThread {
-                                textView.text = sb.toString()
-                            }
-                        } else {
-                            runOnUiThread {
-                                textView.text = "Weather response body is null."
                             }
                         }
                     } else {
-                        runOnUiThread {
-                            textView.text = "Error: ${response.errorBody()?.string()}"
-                        }
+                        Log.e("WeatherError", "Response not successful: ${response.errorBody()?.string()}")
                     }
                 }
 
                 override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
-                    runOnUiThread {
-                        textView.text = "Failed to get weather data: ${t.message}"
-                    }
+                    Log.e("WeatherError", "Failed to get weather data: ${t.message}")
                 }
             })
     }
+
+
+    private fun setWeatherImage(imageView: ImageView, weatherCondition: String) {
+        when (weatherCondition) {
+            "多雲" -> imageView.setImageResource(R.drawable.cloudy)
+            "雨天" -> imageView.setImageResource(R.drawable.raining)
+            "晴天" -> imageView.setImageResource(R.drawable.sunny)
+            "多雲陣雨" -> imageView.setImageResource(R.drawable.cloudy_with_showers)
+            "晴時多雲" -> imageView.setImageResource(R.drawable.cloudy_and_sunny)
+            "多雲雷陣雨" -> imageView.setImageResource(R.drawable.cloudy_thundershowers)
+        }
+    }
+
+
 
 
     private fun checkPermission() {
@@ -264,4 +335,17 @@ class home : AppCompatActivity() {
         }
     }
 
+    private fun getCurrentDate(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return dateFormat.format(Date())
+    }
+
+    private fun getNextDate(): String {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DATE, 1)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return dateFormat.format(calendar.time)
+    }
+
 }
+

@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.google.firebase.auth.FirebaseAuth
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Liked_Post
 //import tw.edu.pu.csim.s1102294.e_clothes.Community.Liked_Post
 import tw.edu.pu.csim.s1102294.e_clothes.Match.edit_Chosen_Match
@@ -17,6 +18,8 @@ import tw.edu.pu.csim.s1102294.e_clothes.Match.share_Match
 class Setting : AppCompatActivity() {
 
     lateinit var btn_Delete: Button
+    lateinit var Sign_out: Button
+    lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +74,15 @@ class Setting : AppCompatActivity() {
             }
             popup.show()
         }
+
+
+        firebaseAuth = FirebaseAuth.getInstance()
+
+        Sign_out = findViewById(R.id.Sign_out)
+        Sign_out.setOnClickListener {
+            logoutUser()
+        }
+
         btn_Delete.setOnClickListener {
             AlertDialog.Builder(this@Setting)
                 .setTitle("title")
@@ -99,4 +111,13 @@ class Setting : AppCompatActivity() {
                 .show()
         }
     }
+    private fun logoutUser() {
+        // 使用 Firebase 身分驗證進行登出
+        firebaseAuth.signOut()
+        // 轉到 Login
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
 }
