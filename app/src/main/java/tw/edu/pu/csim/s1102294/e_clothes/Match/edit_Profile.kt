@@ -11,12 +11,21 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import tw.edu.pu.csim.s1102294.e_clothes.Community.Friends
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Liked_Post
+import tw.edu.pu.csim.s1102294.e_clothes.Community.Personal_Page
 import tw.edu.pu.csim.s1102294.e_clothes.R
 import tw.edu.pu.csim.s1102294.e_clothes.Setting
 import tw.edu.pu.csim.s1102294.e_clothes.change_password
+import tw.edu.pu.csim.s1102294.e_clothes.home
 
 class edit_Profile : AppCompatActivity() {
+
+    lateinit var Match: ImageView
+    lateinit var Home: ImageView
+    lateinit var Friend: ImageView
+    lateinit var Clothes: ImageView
+    lateinit var Personal_page: ImageView
 
     lateinit var ok: Button
     lateinit var txv_change: TextView
@@ -33,6 +42,42 @@ class edit_Profile : AppCompatActivity() {
         val sign: EditText = findViewById(R.id.sign)
         val db = FirebaseFirestore.getInstance()
         val id = FirebaseAuth.getInstance().currentUser?.uid // 取得使用者 UID
+
+        Home = findViewById(R.id.Home)
+        Home.setOnClickListener {
+//            Home.text = ""
+            val intent1 = Intent(this, home::class.java)
+            startActivity(intent1)
+            finish()
+        }
+
+        Match = findViewById(R.id.Match)
+        Match.setOnClickListener {
+//            Match.text = ""
+            val intent2 = Intent(this, Match_home::class.java)
+            startActivity(intent2)
+            finish()
+        }
+
+        Clothes = findViewById(R.id.Clothes)
+        Clothes.setOnClickListener {
+//            textView9.text = "123"
+//            checkPermission()
+        }
+
+        Friend = findViewById(R.id.Friend)
+        Friend.setOnClickListener {
+            val intent1 = Intent(this, Friends::class.java)
+            startActivity(intent1)
+            finish()
+        }
+
+        Personal_page = findViewById(R.id.Personal_page)
+        Personal_page.setOnClickListener {
+            val intent1 = Intent(this, Personal_Page::class.java)
+            startActivity(intent1)
+            finish()
+        }
 
         ok = findViewById(R.id.ok)
         ok.setOnClickListener {

@@ -116,19 +116,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="輸入搭配名稱："
+                android:text="輸入標籤名稱："
                 android:textColor="@color/black"
                 android:textSize="15dp" />
 
-            <EditText
-                android:id="@+id/label"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:textSize="13dp"
-                android:theme="@style/MyEditText" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:textSize="13dp"
+                    android:layout_weight="1"
+                    android:theme="@style/MyEditText" />
+
+                <ImageView
+                    android:id="@+id/imageView14"
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="15dp"
+                    app:srcCompat="@drawable/plus" />
+            </LinearLayout>
 
         </LinearLayout>
 

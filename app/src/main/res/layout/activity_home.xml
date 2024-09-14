@@ -61,11 +61,25 @@
 
                 <TextView
                     android:id="@+id/textView32"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:text="今日\n天氣"
                     android:textColor="@color/black"
                     android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/textView33"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/cloudy_and_sunny" />
+
 
             </LinearLayout>
 
