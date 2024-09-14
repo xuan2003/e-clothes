@@ -28,6 +28,7 @@ import tw.edu.pu.csim.s1102294.e_clothes.weather.WeatherResponse
 import tw.edu.pu.csim.s1102294.e_clothes.weather.WeatherService
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -165,6 +166,7 @@ class home : AppCompatActivity() {
         tomorrow_night_time = findViewById(R.id.tomorrow_night_time)
         tomorrow_night_weather = findViewById(R.id.tomorrow_night_weather)
         tomorrow_night_temperature = findViewById(R.id.tomorrow_night_temperature)
+
         weatherService = RetrofitClient.myWeatherApi().create(WeatherService::class.java)
     }
 
@@ -312,12 +314,13 @@ class home : AppCompatActivity() {
 
     private fun setWeatherImage(imageView: ImageView, weatherCondition: String) {
         when (weatherCondition) {
-            "多雲" -> imageView.setImageResource(R.drawable.cloudy)
+            "多雲","多雲時陰" -> imageView.setImageResource(R.drawable.cloudy)
             "雨天" -> imageView.setImageResource(R.drawable.raining)
             "晴天" -> imageView.setImageResource(R.drawable.sunny)
             "多雲陣雨" -> imageView.setImageResource(R.drawable.cloudy_with_showers)
             "晴時多雲" -> imageView.setImageResource(R.drawable.cloudy_and_sunny)
             "多雲雷陣雨" -> imageView.setImageResource(R.drawable.cloudy_thundershowers)
+
         }
     }
 

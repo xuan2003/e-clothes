@@ -4,10 +4,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Liked_Post
 import tw.edu.pu.csim.s1102294.e_clothes.R
 import tw.edu.pu.csim.s1102294.e_clothes.Setting
@@ -17,14 +20,53 @@ class edit_Profile : AppCompatActivity() {
 
     lateinit var ok: Button
     lateinit var txv_change: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
+        val userUid = FirebaseAuth.getInstance().currentUser?.uid // 取得使用者 UID
+
+        val user_name: EditText = findViewById(R.id.user_name)
+        val birthday: EditText = findViewById(R.id.birthday)
+        val gender: EditText = findViewById(R.id.gender)
+        val sign: EditText = findViewById(R.id.sign)
+        val db = FirebaseFirestore.getInstance()
+        val id = FirebaseAuth.getInstance().currentUser?.uid // 取得使用者 UID
+
         ok = findViewById(R.id.ok)
         ok.setOnClickListener {
-            Toast.makeText(this, "更改成功!", Toast.LENGTH_SHORT).show()
+            // 确保用户已登录，再执行更新操作
+            val id = FirebaseAuth.getInstance().currentUser?.uid
+            val newName = user_name.text.toString()
+
+            if (id != null) {
+                val user = hashMapOf(
+                    "使用者名稱" to newName,
+                    "生日" to birthday.text.toString(),
+                    "性別" to gender.text.toString(),
+                    "個性簽名" to sign.text.toString()
+                )
+
+                // 使用用户名称和"個人資料"来确定文档ID
+                val documentId = "$newName 個人資料"
+
+                db.collection(id) // 假设集合名称是用户的 UID
+                    .document(documentId) // 生成新的文档 ID
+                    .set(user)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "更新成功", Toast.LENGTH_LONG).show()
+                        // 更新 EditText 显示的内容（如果需要）
+                        user_name.setText(newName)
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "更新失败: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+            } else {
+                Toast.makeText(this, "用户未登录", Toast.LENGTH_LONG).show()
+            }
         }
+
 
         txv_change = findViewById(R.id.txv_change)
         txv_change.setOnClickListener {
@@ -32,6 +74,9 @@ class edit_Profile : AppCompatActivity() {
             startActivity(intent2)
             finish()
         }
+
+
+
 
 
         val menu = findViewById<ImageView>(R.id.menu)
