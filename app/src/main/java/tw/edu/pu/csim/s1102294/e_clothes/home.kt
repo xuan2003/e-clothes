@@ -257,7 +257,7 @@ class home : AppCompatActivity() {
                                 if (location.locationName == locationCity) {
                                     // Process weather elements
                                     location.weatherElement.forEach { weatherElement ->
-                                        val isMorning = weatherElement.time.any {
+                                        weatherElement.time.any {
                                             it.startTime.substring(11, 13).toInt() == 6
                                         }
                                         weatherElement.time.forEach { time ->

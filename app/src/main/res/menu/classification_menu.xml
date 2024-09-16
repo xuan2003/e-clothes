@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/hat"
+        android:title="帽子"/>
+    <item
+        android:id="@+id/hair_ornaments"
+        android:title="髪飾"/>
+    <item
+        android:id="@+id/clothes"
+        android:title="上衣"/>
+    <item
+        android:id="@+id/pants"
+        android:title="上衣"/>
+    <item
+        android:id="@+id/dress"
+        android:title="洋裝"/>
+    <item
+        android:id="@+id/shoes"
+        android:title="鞋子"/>
+</menu>

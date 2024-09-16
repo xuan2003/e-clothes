@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="新搭配"
+            android:text="編輯標籤"
             android:textColor="#67595E"
             android:textSize="20dp" />
 
@@ -82,6 +82,8 @@
             android:id="@+id/clothes"
             android:layout_width="match_parent"
             android:layout_height="300dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             app:srcCompat="@drawable/a" />
 
         <LinearLayout
@@ -92,70 +94,94 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/textView2"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="輸入搭配名稱："
-            android:textColor="@color/black"
-            android:textSize="15dp" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/Match_name"
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="服裝分類"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/Classification_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                android:gravity="right"
+                android:layout_marginRight="20dp"
+                android:text="帽子" />
+
+            <ImageView
+                android:id="@+id/Classification"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/angle_right" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:textSize="13dp"
-            android:theme="@style/MyEditText" />
+            android:layout_height="1dp"
+            android:background="#AAA09E"
+            android:orientation="vertical">
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="輸入搭配名稱："
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="輸入標籤名稱："
             android:textColor="@color/black"
             android:textSize="15dp" />
 
-        <EditText
-            android:id="@+id/label"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:textSize="13dp"
-            android:theme="@style/MyEditText" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:textSize="13dp"
+                android:layout_weight="1"
+                android:theme="@style/MyEditText" />
+
+            <ImageView
+                android:id="@+id/add_label"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_marginRight="15dp"
+                app:srcCompat="@drawable/plus" />
+        </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/label_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/label1"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:background="@drawable/corners_login"
-            android:text="標籤"
-            android:textColor="#67595E"
-            android:textSize="10dp" />
-
-        <Button
-            android:id="@+id/label2"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:background="@drawable/corners_login"
-            android:text="標籤"
-            android:textColor="#67595E"
-            android:textSize="10dp" />
-    </LinearLayout>
+        android:orientation="horizontal"/>
 
 
     <LinearLayout
