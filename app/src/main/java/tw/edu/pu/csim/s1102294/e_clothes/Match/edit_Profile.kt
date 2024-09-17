@@ -34,14 +34,11 @@ class edit_Profile : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
-        val userUid = FirebaseAuth.getInstance().currentUser?.uid // 取得使用者 UID
-
         val user_name: EditText = findViewById(R.id.user_name)
         val birthday: EditText = findViewById(R.id.birthday)
         val gender: EditText = findViewById(R.id.gender)
         val sign: EditText = findViewById(R.id.sign)
         val db = FirebaseFirestore.getInstance()
-        val id = FirebaseAuth.getInstance().currentUser?.uid // 取得使用者 UID
 
         Home = findViewById(R.id.Home)
         Home.setOnClickListener {
