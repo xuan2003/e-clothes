@@ -5,23 +5,17 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
-import android.media.Image
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import androidx.core.view.marginLeft
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Friends
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Personal_Page
 import tw.edu.pu.csim.s1102294.e_clothes.Match.Match_home
-import tw.edu.pu.csim.s1102294.e_clothes.Match.New_Match
 import tw.edu.pu.csim.s1102294.e_clothes.R
 import tw.edu.pu.csim.s1102294.e_clothes.home
 import tw.edu.pu.csim.s1102294.e_clothes.login
@@ -46,7 +40,7 @@ class New_clothes : AppCompatActivity() {
     lateinit var label: EditText
     var userId: String? = null
     lateinit var firebaseHelper: FirebaseHelper
-    var imageUrl: String? = null // 新增用来存储图片的URL
+    var imageUrl: String? = null // 新增用來存儲圖片的URL
     private val labelTexts = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,31 +49,39 @@ class New_clothes : AppCompatActivity() {
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser == null) {
-            // 用户未登录，显示提示并跳转到登录页面
             Toast.makeText(this, "用戶未登入，請先登入", Toast.LENGTH_LONG).show()
-
-            // 跳转到登录页面
             val loginIntent = Intent(this, login::class.java)
             startActivity(loginIntent)
-            finish() // 关闭当前 Activity，避免用户返回
-            return // 阻止后续代码执行
+            finish()
+            return
         } else {
-            userId = currentUser.uid // 获取用户的 UID
+            userId = currentUser.uid
         }
 
         val db = FirebaseFirestore.getInstance()
 
         clothes = findViewById(R.id.clothes)
+
+        // 获取传递过来的图片URI或Bitmap
+        val imageUriString = intent.getStringExtra("selectedImageUri")
         val imageBitmap = intent.getParcelableExtra<Bitmap>("capturedPhoto")
-        imageBitmap?.let {
-            clothes.setImageBitmap(it)
-        } ?: run {
-            Toast.makeText(this, "加載失敗", Toast.LENGTH_LONG).show()
+
+        // 根据传递的内容设置ImageView
+        when {
+            imageUriString != null -> {
+                val imageUri = Uri.parse(imageUriString)
+                clothes.setImageURI(imageUri)
+            }
+            imageBitmap != null -> {
+                clothes.setImageBitmap(imageBitmap)
+            }
+            else -> {
+                Toast.makeText(this, "加載失敗", Toast.LENGTH_LONG).show()
+            }
         }
 
         Home = findViewById(R.id.Home)
         Home.setOnClickListener {
-//            Home.text = ""
             val intent1 = Intent(this, home::class.java)
             startActivity(intent1)
             finish()
@@ -87,18 +89,12 @@ class New_clothes : AppCompatActivity() {
 
         Match = findViewById(R.id.Match)
         Match.setOnClickListener {
-//            Match.text = ""
             val intent2 = Intent(this, Match_home::class.java)
             startActivity(intent2)
             finish()
         }
 
         addClothes = findViewById(R.id.addClothes)
-        addClothes.setOnClickListener {
-//            textView9.text = "123"
-//            checkPermission()
-        }
-
         Friend = findViewById(R.id.Friend)
         Friend.setOnClickListener {
             val intent1 = Intent(this, Friends::class.java)
@@ -117,15 +113,13 @@ class New_clothes : AppCompatActivity() {
         firebaseHelper = FirebaseHelper()
 
         finish.setOnClickListener {
-            // 从 ImageView 获取 Bitmap
             val bitmap = (clothes.drawable as? BitmapDrawable)?.bitmap
             if (bitmap != null) {
                 val imageUri = getImageUriFromBitmap(this, bitmap)
                 if (imageUri != null) {
-                    // 上传图片并获取URL
                     firebaseHelper.uploadImage(this, imageUri, onSuccess = { url ->
-                        imageUrl = url // 保存图片URL
-                        saveDataToFirestore(db) // 上传成功后保存到 Firestore
+                        imageUrl = url
+                        saveDataToFirestore(db)
                     }, onFailure = { e ->
                         Toast.makeText(this, "上傳失敗: ${e.message}", Toast.LENGTH_LONG).show()
                     })
@@ -139,19 +133,21 @@ class New_clothes : AppCompatActivity() {
 
         previous = findViewById(R.id.previous)
         previous.setOnClickListener {
-            val intent1 = Intent(this, New_Match::class.java)
+            val intent1 = Intent(this, home::class.java)
             startActivity(intent1)
             finish()
         }
+
         Classification_name = findViewById(R.id.Classification_name)
 
         val Classification: ImageView = findViewById(R.id.Classification)
         Classification.setOnClickListener { view ->
             showPopupMenu(view)
         }
+
         label = findViewById(R.id.label)
-        add_label = findViewById<ImageView>(R.id.add_label)
-        val label_layout = findViewById<LinearLayout>(R.id.label_layout) // 确保有一个父布局来容纳新按钮
+        add_label = findViewById(R.id.add_label)
+        val label_layout = findViewById<LinearLayout>(R.id.label_layout)
         add_label.setOnClickListener {
             if (label.text.isNotEmpty()) {
                 val newtxv = TextView(this)
@@ -162,9 +158,7 @@ class New_clothes : AppCompatActivity() {
                 newtxv.setTextColor(Color.parseColor("#000000"))
 
                 label_layout.addView(newtxv)
-                label.text.clear()  // 清空输入框
-
-                // 将文本添加到列表中
+                label.text.clear()
                 labelTexts.add(newtxv.text.toString())
             } else {
                 Toast.makeText(this, "標籤不能為空", Toast.LENGTH_SHORT).show()
@@ -172,35 +166,42 @@ class New_clothes : AppCompatActivity() {
         }
     }
 
-    // 保存数据到 Firestore
     private fun saveDataToFirestore(db: FirebaseFirestore) {
         val id = FirebaseAuth.getInstance().currentUser?.uid
         if (id != null) {
-            val user = hashMapOf(
-                "服裝種類" to Classification_name.text.toString(),
-                "圖片網址" to imageUrl, // 将图片 URL 保存到 Firestore
-                "標籤" to labelTexts // 将文本列表保存到 Firestore
-            )
+            db.collection(id)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val docCount = task.result?.size() ?: 0
+                        val newDocumentName = Classification_name.text.toString() + "${docCount + 1}"
 
-            val documentId = Classification_name.text.toString()
+                        val user = hashMapOf(
+                            "服裝種類" to Classification_name.text.toString(),
+                            "圖片網址" to imageUrl,
+                            "標籤" to labelTexts
+                        )
 
-            db.collection(id) // 假设集合名称是用户的 UID
-                .document(documentId)
-                .set(user)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "搭配完成", Toast.LENGTH_LONG).show()
-                    val intent1 = Intent(this, home::class.java)
-                    startActivity(intent1)
-                    finish()
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "搭配失敗: ${e.message}", Toast.LENGTH_LONG).show()
+                        db.collection(id)
+                            .document(newDocumentName)
+                            .set(user)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "新增完成", Toast.LENGTH_LONG).show()
+                                val intent1 = Intent(this, home::class.java)
+                                startActivity(intent1)
+                                finish()
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "新增失敗: ${e.message}", Toast.LENGTH_LONG).show()
+                            }
+                    } else {
+                        Toast.makeText(this, "獲取文件數量失敗", Toast.LENGTH_LONG).show()
+                    }
                 }
         } else {
             Toast.makeText(this, "用戶未登入", Toast.LENGTH_LONG).show()
         }
     }
-
 
     private fun showPopupMenu(view: View) {
         val popupMenu = PopupMenu(this, view)
@@ -220,16 +221,14 @@ class New_clothes : AppCompatActivity() {
         popupMenu.show()
     }
 
-    // 将 Bitmap 转换为 URI
     private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri? {
-        // 创建一个临时文件用于保存Bitmap
         val file = File(context.cacheDir, "${UUID.randomUUID()}.jpg")
         return try {
             val outputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream) // 将Bitmap压缩为JPEG格式
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
             outputStream.flush()
             outputStream.close()
-            Uri.fromFile(file) // 返回文件的Uri
+            Uri.fromFile(file)
         } catch (e: IOException) {
             e.printStackTrace()
             null

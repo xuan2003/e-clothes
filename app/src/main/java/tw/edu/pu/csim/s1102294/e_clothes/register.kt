@@ -85,7 +85,7 @@ class register : AppCompatActivity() {
     }
 
     private fun navigateToLoginScreen() {
-        val intent = Intent(this, home::class.java)
+        val intent = Intent(this, login::class.java)
         startActivity(intent)
         finish()
     }

@@ -29,6 +29,7 @@ import tw.edu.pu.csim.s1102294.e_clothes.weather.WeatherService
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import tw.edu.pu.csim.s1102294.e_clothes.clothes.choose_add
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -60,30 +61,6 @@ class home : AppCompatActivity() {
     lateinit var tomorrow_night_time: TextView
     lateinit var tomorrow_night_weather: ImageView
     lateinit var tomorrow_night_temperature: TextView
-
-    private val takePictureResult =
-        registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-            val intent = Intent(this, New_clothes::class.java)
-            intent.putExtra("capturedPhoto", bitmap) // 传递 Bitmap 对象而不是资源标识符
-            startActivity(intent)
-            finish()
-        }
-
-    private val permissionsResultCallback = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()){
-        when (it) {
-            true -> {
-//                txv.text = "您允許拍照權限，歡迎使用拍照功能！"
-                takePictureResult.launch(null)
-            }
-            false -> {
-//                txv.text = "抱歉，您尚未允許拍照權限，無法使用相機功能。"
-            }
-        }
-
-
-    }
-
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var locationCity: String
@@ -117,7 +94,10 @@ class home : AppCompatActivity() {
         Clothes = findViewById(R.id.Clothes)
         Clothes.setOnClickListener {
 //            textView9.text = "123"
-            checkPermission()
+//            checkPermission()
+            val intent = Intent(this, choose_add::class.java)
+            startActivity(intent)
+            finish()
         }
 
         Friend = findViewById(R.id.Friend)
@@ -168,6 +148,7 @@ class home : AppCompatActivity() {
         tomorrow_night_temperature = findViewById(R.id.tomorrow_night_temperature)
 
         weatherService = RetrofitClient.myWeatherApi().create(WeatherService::class.java)
+        getWeather("臺中市")
     }
 
     private fun startLocationUpdates() {
@@ -273,24 +254,24 @@ class home : AppCompatActivity() {
                                             // Handle today's 06:00 weather
                                             if (startTime.startsWith(getCurrentDate()) && startTime.substring(11, 16) == "06:00") {
 //                                                today_morning_time.text = "123"
-                                                today_morning_time.text = "Today 6 AM: ${startTime.substring(0, 16)}"
+                                                today_morning_time.text = "Today 6 AM: ${startTime.substring(0, 16)}  "
                                                 today_morning_temperature.text = "Temperature: $temperature ˚C"
                                                 setWeatherImage(today_morning_weather, weatherCondition)
                                             }
 
                                             if (startTime.substring(0, 10) == getCurrentDate() && startTime.substring(11, 16) == "18:00") {
-                                                today_night_time.text = "${startTime.substring(0, 16)}"
+                                                today_night_time.text = "${startTime.substring(0, 16)}  "
                                                 today_night_temperature.text = "$temperature ˚C"
                                                 setWeatherImage(today_night_weather, weatherCondition)
                                             }
 
                                             if (startTime.substring(0, 10) == getNextDate() && startTime.substring(11, 16) == "06:00") {
-                                                tomorrow_morning_time.text = "${startTime.substring(0, 16)}"
+                                                tomorrow_morning_time.text = "${startTime.substring(0, 16)}  "
                                                 tomorrow_morning_temperature.text = "$temperature ˚C"
                                                 setWeatherImage(tomorrow_morning_weather, weatherCondition)
                                             }
                                             if (startTime.substring(0, 10) == getNextDate() && startTime.substring(11, 16) == "18:00") {
-                                                tomorrow_night_time.text = "${startTime.substring(0, 16)}"
+                                                tomorrow_night_time.text = "${startTime.substring(0, 16)}  "
                                                 tomorrow_night_temperature.text = "$temperature ˚C"
                                                 setWeatherImage(tomorrow_night_weather, weatherCondition)
                                             }
@@ -350,21 +331,6 @@ class home : AppCompatActivity() {
 
         }
     }
-
-
-
-
-    private fun checkPermission() {
-        val permission = ContextCompat.checkSelfPermission(
-            this, android.Manifest.permission.CAMERA)
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            permissionsResultCallback.launch(android.Manifest.permission.CAMERA)
-        } else {
-//            txv.text = "您先前已允許拍照權限，歡迎使用拍照功能！"
-            takePictureResult.launch(null)
-        }
-    }
-
     private fun getCurrentDate(): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return dateFormat.format(Date())
