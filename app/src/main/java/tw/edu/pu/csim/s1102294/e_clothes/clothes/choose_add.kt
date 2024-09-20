@@ -41,6 +41,7 @@ class choose_add : AppCompatActivity() {
 
     lateinit var camera: Button
     lateinit var photo: Button
+    lateinit var cabinet: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +54,12 @@ class choose_add : AppCompatActivity() {
         photo = findViewById(R.id.photo)
         photo.setOnClickListener {
             openPhotoAlbum()
+        }
+        cabinet = findViewById(R.id.cabinet)
+        cabinet.setOnClickListener {
+            val intent = Intent(this, Wardrobe::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 

@@ -23,6 +23,9 @@
         android:theme="@style/Theme.Design.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".clothes.Wardrobe"
+            android:exported="false" />
+        <activity
             android:name=".clothes.choose_add"
             android:exported="false" />
         <activity

@@ -26,4 +26,13 @@
         android:layout_margin="10dp"
         android:textColor="@color/black"
         android:text="開啟相簿" />
+
+    <Button
+        android:id="@+id/cabinet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/corners_login"
+        android:layout_margin="10dp"
+        android:textColor="@color/black"
+        android:text="我的衣櫃" />
 </LinearLayout>
