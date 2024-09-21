@@ -86,6 +86,7 @@
             android:background="#AAA09E" />
 
         <LinearLayout
+            android:id="@+id/imagesContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -94,36 +95,26 @@
                 android:id="@+id/hat1"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/c" />
+                android:layout_weight="1" />
 
             <ImageView
                 android:id="@+id/hat2"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/c" />
+                android:layout_weight="1" />
 
             <ImageView
                 android:id="@+id/hat3"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/c" />
+                android:layout_weight="1" />
 
             <ImageView
                 android:id="@+id/hat4"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/c" />
+                android:layout_weight="1" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Button" />
 
     </LinearLayout>
 

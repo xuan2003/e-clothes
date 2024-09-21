@@ -11,7 +11,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.*
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Friends
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Personal_Page
@@ -117,9 +119,11 @@ class New_clothes : AppCompatActivity() {
             if (bitmap != null) {
                 val imageUri = getImageUriFromBitmap(this, bitmap)
                 if (imageUri != null) {
-                    firebaseHelper.uploadImage(this, imageUri, onSuccess = { url ->
-                        imageUrl = url
-                        saveDataToFirestore(db)
+                    firebaseHelper.uploadImage(this, imageUri, onSuccess = { fullUrl ->
+                        // Extract the relative path from the full URL
+                        val relativePath = fullUrl.substringAfter("/o/").substringBefore("?alt=media")
+                        imageUrl = relativePath  // Now `imageUrl` stores the relative path
+                        saveDataToFirestore(db)   // Proceed to save the data to Firestore
                     }, onFailure = { e ->
                         Toast.makeText(this, "上傳失敗: ${e.message}", Toast.LENGTH_LONG).show()
                     })
@@ -130,6 +134,29 @@ class New_clothes : AppCompatActivity() {
                 Toast.makeText(this, "加載失敗", Toast.LENGTH_SHORT).show()
             }
         }
+
+        finish.setOnClickListener {
+            val bitmap = (clothes.drawable as? BitmapDrawable)?.bitmap
+            if (bitmap != null) {
+                val imageUri = getImageUriFromBitmap(this, bitmap)
+                if (imageUri != null) {
+                    firebaseHelper.uploadImage(this, imageUri, onSuccess = { fullUrl ->
+                        // Extract the relative path, replace %2F with /, and add a leading /
+                        val relativePath = "/" + fullUrl.substringAfter("/o/").substringBefore("?alt=media").replace("%2F", "/")
+                        imageUrl = relativePath  // Now `imageUrl` stores the cleaned relative path with a leading /
+                        saveDataToFirestore(db)   // Proceed to save the data to Firestore
+                    }, onFailure = { e ->
+                        Toast.makeText(this, "上傳失敗: ${e.message}", Toast.LENGTH_LONG).show()
+                    })
+                } else {
+                    Toast.makeText(this, "無法取得URL", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "加載失敗", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
 
         previous = findViewById(R.id.previous)
         previous.setOnClickListener {
@@ -166,42 +193,84 @@ class New_clothes : AppCompatActivity() {
         }
     }
 
+    private fun showClothingCategoryCounts(db: FirebaseFirestore, onResult: (Map<String, Int>) -> Unit) {
+        val id = FirebaseAuth.getInstance().currentUser?.uid
+        if (id != null) {
+            val categories = listOf("帽子", "髪飾", "上衣", "褲子", "鞋子", "洋裝") // 定義所有分類
+            val countsMap = mutableMapOf<String, Int>() // 儲存每個分類的數量
+
+            categories.forEach { category ->
+                db.collection(id)
+                    .whereEqualTo("服裝種類", category)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        val count = documents.size()
+                        countsMap[category] = count
+
+                        // 當所有分類的數量都獲取完後，傳遞結果
+                        if (countsMap.size == categories.size) {
+                            onResult(countsMap)
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "獲取 $category 的數量失敗: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+            }
+        }
+    }
+
+
     private fun saveDataToFirestore(db: FirebaseFirestore) {
         val id = FirebaseAuth.getInstance().currentUser?.uid
         if (id != null) {
+            val category = Classification_name.text.toString()
+
+            // 獲取每個類別的最新一筆資料
             db.collection(id)
+                .whereEqualTo("服裝種類", category)
+                .orderBy(FieldPath.documentId(), Query.Direction.DESCENDING)
+                .limit(1)
                 .get()
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val docCount = task.result?.size() ?: 0
-                        val newDocumentName = Classification_name.text.toString() + "${docCount + 1}"
-
-                        val user = hashMapOf(
-                            "服裝種類" to Classification_name.text.toString(),
-                            "圖片網址" to imageUrl,
-                            "標籤" to labelTexts
-                        )
-
-                        db.collection(id)
-                            .document(newDocumentName)
-                            .set(user)
-                            .addOnSuccessListener {
-                                Toast.makeText(this, "新增完成", Toast.LENGTH_LONG).show()
-                                val intent1 = Intent(this, home::class.java)
-                                startActivity(intent1)
-                                finish()
-                            }
-                            .addOnFailureListener { e ->
-                                Toast.makeText(this, "新增失敗: ${e.message}", Toast.LENGTH_LONG).show()
-                            }
+                .addOnSuccessListener { documents ->
+                    val newDocumentName = if (documents.isEmpty) {
+                        // 如果沒有資料，使用預設名稱
+//                        "$category1"
                     } else {
-                        Toast.makeText(this, "獲取文件數量失敗", Toast.LENGTH_LONG).show()
+                        // 獲取最新文檔ID並加1
+                        val lastDocumentName = documents.first().id
+                        val lastNumber = lastDocumentName.replace(category, "").toIntOrNull() ?: 0
+                        "$category${lastNumber + 1}"
                     }
+
+                    // 儲存資料
+                    val user = hashMapOf(
+                        "服裝種類" to category,
+                        "圖片網址" to imageUrl,
+                        "標籤" to labelTexts
+                    )
+
+                    db.collection(id)
+                        .document(newDocumentName as String)
+                        .set(user)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "新增完成", Toast.LENGTH_LONG).show()
+                            val intent1 = Intent(this, home::class.java)
+                            startActivity(intent1)
+                            finish()
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "新增失敗: ${e.message}", Toast.LENGTH_LONG).show()
+                        }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "獲取最新文件失敗: ${e.message}", Toast.LENGTH_LONG).show()
                 }
         } else {
             Toast.makeText(this, "用戶未登入", Toast.LENGTH_LONG).show()
         }
     }
+
+
 
     private fun showPopupMenu(view: View) {
         val popupMenu = PopupMenu(this, view)
