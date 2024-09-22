@@ -14,20 +14,41 @@ import com.google.firebase.storage.FirebaseStorage
 import tw.edu.pu.csim.s1102294.e_clothes.R
 
 class Wardrobe : AppCompatActivity() {
-    lateinit var imagesContainer: LinearLayout // 用于存放图片的容器
-    private val hatImageViews = mutableListOf<ImageView>() // 存储 ImageView 的列表
+    lateinit var hatImagesContainer: LinearLayout
+    private val hatImageViews = mutableListOf<ImageView>()
+    lateinit var dressImagesContainer: LinearLayout // 將髮飾容器改為洋裝
+    private val dressImageViews = mutableListOf<ImageView>()
+    lateinit var clothesImagesContainer: LinearLayout
+    private val clothesImageViews = mutableListOf<ImageView>()
+    lateinit var pantsImagesContainer: LinearLayout
+    private val pantsImageViews = mutableListOf<ImageView>()
+    lateinit var shoesImagesContainer: LinearLayout
+    private val shoesImageViews = mutableListOf<ImageView>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wardrobe)
 
-        imagesContainer = findViewById(R.id.imagesContainer) // 初始化图片容器
-        initializeImageViews() // 初始化 ImageView
-        downloadImages() // 调用方法下载图片
+        hatImagesContainer = findViewById(R.id.imagesContainer)
+        dressImagesContainer = findViewById(R.id.dressimagesContainer) // 更新容器ID
+        clothesImagesContainer = findViewById(R.id.clothesimagesContainer)
+        pantsImagesContainer = findViewById(R.id.pantsimagesContainer)
+        shoesImagesContainer = findViewById(R.id.shoesimagesContainer)
+
+        initializeImageViews(hatImagesContainer, hatImageViews) // 初始化帽子
+        initializeImageViews(dressImagesContainer, dressImageViews) // 初始化洋裝
+        initializeImageViews(clothesImagesContainer, clothesImageViews) // 初始化上衣
+        initializeImageViews(pantsImagesContainer, pantsImageViews) // 初始化褲子
+        initializeImageViews(shoesImagesContainer, shoesImageViews) // 初始化鞋子
+
+        downloadImages("帽子", hatImageViews) // 下載帽子圖片
+        downloadImages("洋裝", dressImageViews) // 下載洋裝圖片
+        downloadImages("上衣", clothesImageViews) // 下載上衣圖片
+        downloadImages("褲子", pantsImageViews) // 下載褲子圖片
+        downloadImages("鞋子", shoesImageViews) // 下載鞋子圖片
     }
 
-    private fun initializeImageViews() {
-        // 创建 ImageView 并添加到容器中
+    private fun initializeImageViews(container: LinearLayout, imageViews: MutableList<ImageView>) {
         for (i in 1..4) {
             val imageView = ImageView(this)
             val layoutParams = LinearLayout.LayoutParams(
@@ -35,33 +56,33 @@ class Wardrobe : AppCompatActivity() {
                 (100 * resources.displayMetrics.density).toInt()
             )
             imageView.layoutParams = layoutParams
-            imagesContainer.addView(imageView) // 添加到容器中
-            hatImageViews.add(imageView) // 将 ImageView 添加到列表中
+            container.addView(imageView) // 添加到容器中
+            imageViews.add(imageView) // 將 ImageView 添加到列表中
         }
     }
 
-    private fun downloadImages() {
+    private fun downloadImages(type: String, imageViews: List<ImageView>) {
         val db = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
         if (userId != null) {
             db.collection(userId)
-                .whereEqualTo("服裝種類", "帽子")
-                .orderBy(FieldPath.documentId()) // 根据文档 ID 排序
-                .limit(4) // 限制获取前 4 条数据
+                .whereEqualTo("服裝種類", type)
+                .orderBy(FieldPath.documentId())
+                .limit(4)
                 .get()
                 .addOnSuccessListener { documents ->
                     if (!documents.isEmpty) {
                         var index = 0
                         for (document in documents) {
-                            val imageUrl = document.getString("圖片網址") // 假设字段名为"圖片網址"
-                            if (imageUrl != null && index < hatImageViews.size) {
-                                addImageView(imageUrl, hatImageViews[index]) // 下载并设置图片
+                            val imageUrl = document.getString("圖片網址")
+                            if (imageUrl != null && index < imageViews.size) {
+                                addImageView(imageUrl, imageViews[index])
                                 index++
                             }
                         }
                     } else {
-                        Log.d("Firebase", "没有找到帽子文件")
+                        Log.d("Firebase", "没有找到文件")
                     }
                 }
                 .addOnFailureListener { exception ->
@@ -73,7 +94,7 @@ class Wardrobe : AppCompatActivity() {
     }
 
     private fun addImageView(imageUrl: String, imageView: ImageView) {
-        downloadFromFirebaseStorage(imageUrl, imageView) // 下载并设置图片
+        downloadFromFirebaseStorage(imageUrl, imageView)
     }
 
     private fun downloadFromFirebaseStorage(relativePath: String, imageView: ImageView) {
@@ -82,9 +103,10 @@ class Wardrobe : AppCompatActivity() {
 
         storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener { bytes ->
             val bmp: Bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-            imageView.setImageBitmap(bmp) // 设置图片
+            imageView.setImageBitmap(bmp)
         }.addOnFailureListener { exception ->
             Log.e("Firebase", "下载图片时出错", exception)
         }
     }
 }
+

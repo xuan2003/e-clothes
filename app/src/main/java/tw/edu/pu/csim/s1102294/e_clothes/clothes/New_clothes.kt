@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
@@ -193,39 +194,12 @@ class New_clothes : AppCompatActivity() {
         }
     }
 
-    private fun showClothingCategoryCounts(db: FirebaseFirestore, onResult: (Map<String, Int>) -> Unit) {
-        val id = FirebaseAuth.getInstance().currentUser?.uid
-        if (id != null) {
-            val categories = listOf("帽子", "髪飾", "上衣", "褲子", "鞋子", "洋裝") // 定義所有分類
-            val countsMap = mutableMapOf<String, Int>() // 儲存每個分類的數量
-
-            categories.forEach { category ->
-                db.collection(id)
-                    .whereEqualTo("服裝種類", category)
-                    .get()
-                    .addOnSuccessListener { documents ->
-                        val count = documents.size()
-                        countsMap[category] = count
-
-                        // 當所有分類的數量都獲取完後，傳遞結果
-                        if (countsMap.size == categories.size) {
-                            onResult(countsMap)
-                        }
-                    }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(this, "獲取 $category 的數量失敗: ${e.message}", Toast.LENGTH_LONG).show()
-                    }
-            }
-        }
-    }
-
-
     private fun saveDataToFirestore(db: FirebaseFirestore) {
         val id = FirebaseAuth.getInstance().currentUser?.uid
         if (id != null) {
             val category = Classification_name.text.toString()
+            Log.d("New_clothes", "Attempting to save category: $category")
 
-            // 獲取每個類別的最新一筆資料
             db.collection(id)
                 .whereEqualTo("服裝種類", category)
                 .orderBy(FieldPath.documentId(), Query.Direction.DESCENDING)
@@ -233,16 +207,13 @@ class New_clothes : AppCompatActivity() {
                 .get()
                 .addOnSuccessListener { documents ->
                     val newDocumentName = if (documents.isEmpty) {
-                        // 如果沒有資料，使用預設名稱
-//                        "$category1"
+                        "${category}1"  // 或者使用其他預設名稱
                     } else {
-                        // 獲取最新文檔ID並加1
                         val lastDocumentName = documents.first().id
                         val lastNumber = lastDocumentName.replace(category, "").toIntOrNull() ?: 0
                         "$category${lastNumber + 1}"
                     }
 
-                    // 儲存資料
                     val user = hashMapOf(
                         "服裝種類" to category,
                         "圖片網址" to imageUrl,
@@ -250,25 +221,27 @@ class New_clothes : AppCompatActivity() {
                     )
 
                     db.collection(id)
-                        .document(newDocumentName as String)
+                        .document(newDocumentName)
                         .set(user)
                         .addOnSuccessListener {
                             Toast.makeText(this, "新增完成", Toast.LENGTH_LONG).show()
-                            val intent1 = Intent(this, home::class.java)
-                            startActivity(intent1)
+                            startActivity(Intent(this, home::class.java))
                             finish()
                         }
                         .addOnFailureListener { e ->
+                            Log.e("New_clothes", "新增失敗: ${e.message}")
                             Toast.makeText(this, "新增失敗: ${e.message}", Toast.LENGTH_LONG).show()
                         }
                 }
                 .addOnFailureListener { e ->
+                    Log.e("New_clothes", "獲取最新文件失敗: ${e.message}")
                     Toast.makeText(this, "獲取最新文件失敗: ${e.message}", Toast.LENGTH_LONG).show()
                 }
         } else {
             Toast.makeText(this, "用戶未登入", Toast.LENGTH_LONG).show()
         }
     }
+
 
 
 
@@ -283,12 +256,13 @@ class New_clothes : AppCompatActivity() {
                 R.id.pants -> Classification_name.text = "褲子"
                 R.id.shoes -> Classification_name.text = "鞋子"
                 R.id.dress -> Classification_name.text = "洋裝"
-                else -> false
+                else -> return@setOnMenuItemClickListener false
             }
             true
         }
         popupMenu.show()
     }
+
 
     private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri? {
         val file = File(context.cacheDir, "${UUID.randomUUID()}.jpg")
