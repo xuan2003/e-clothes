@@ -71,8 +71,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- 帽子區域 -->
+            <!-- 頭飾區域 -->
             <LinearLayout
+                android:id="@+id/hat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -83,14 +84,15 @@
                     android:layout_height="1dp"
                     android:background="#AAA09E" />
 
-                <TextView
-                    android:id="@+id/hat_txv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="帽子"
-                    android:textColor="@color/black"
-                    android:textSize="15dp" />
+                    <TextView
+                        android:id="@+id/hat_txv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="10dp"
+                        android:text="頭飾"
+                        android:textColor="@color/black"
+                        android:textSize="15dp" />
 
                 <View
                     android:id="@+id/view2"
@@ -132,6 +134,7 @@
 
             <!-- 洋裝區域 -->
             <LinearLayout
+                android:id="@+id/dress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -191,6 +194,7 @@
 
             <!-- 上衣區域 -->
             <LinearLayout
+                android:id="@+id/clothes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -250,6 +254,7 @@
 
             <!-- 褲子區域 -->
             <LinearLayout
+                android:id="@+id/pants"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -309,6 +314,7 @@
 
             <!-- 鞋子區域 -->
             <LinearLayout
+                android:id="@+id/shoes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -367,6 +373,13 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <View
+        android:id="@+id/view12"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#AAA09E" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"

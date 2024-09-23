@@ -32,6 +32,7 @@ import android.view.View
 import android.widget.Button
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import tw.edu.pu.csim.s1102294.e_clothes.Match.edit_Profile
 import tw.edu.pu.csim.s1102294.e_clothes.clothes.choose_add
 import tw.edu.pu.csim.s1102294.e_clothes.weather.Time
 import java.text.SimpleDateFormat
@@ -43,10 +44,11 @@ class home : AppCompatActivity() {
     lateinit var Home: ImageView
     lateinit var Friend: ImageView
     lateinit var Clothes: ImageView
-    lateinit var Personal_page: ImageView
+    lateinit var set: ImageView
+    lateinit var profile: ImageView
 
-    private val LOCATION_PERMISSION_REQUEST_CODE = 1
-    private var locationManager: LocationManager? = null
+//    private val LOCATION_PERMISSION_REQUEST_CODE = 1
+//    private var locationManager: LocationManager? = null
     private lateinit var weatherService: WeatherService
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationTextView: TextView
@@ -83,6 +85,12 @@ class home : AppCompatActivity() {
         setContentView(R.layout.activity_home)
 
         textView8 = findViewById(R.id.textView8)
+        profile = findViewById(R.id.profile)
+        profile.setOnClickListener {
+            val intent1 = Intent(this, edit_Profile::class.java)
+            startActivity(intent1)
+            finish()
+        }
 
         Home = findViewById(R.id.Home)
         Home.setOnClickListener {
@@ -116,9 +124,9 @@ class home : AppCompatActivity() {
             finish()
         }
 
-        Personal_page = findViewById(R.id.Personal_page)
-        Personal_page.setOnClickListener {
-            val intent1 = Intent(this, Personal_Page::class.java)
+        set = findViewById(R.id.set)
+        set.setOnClickListener {
+            val intent1 = Intent(this, Setting::class.java)
             startActivity(intent1)
             finish()
         }

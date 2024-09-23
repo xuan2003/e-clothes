@@ -1,5 +1,6 @@
 package tw.edu.pu.csim.s1102294.e_clothes.clothes
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import tw.edu.pu.csim.s1102294.e_clothes.R
+import tw.edu.pu.csim.s1102294.e_clothes.home
 
 class Wardrobe : AppCompatActivity() {
     lateinit var hatImagesContainer: LinearLayout
@@ -24,10 +26,18 @@ class Wardrobe : AppCompatActivity() {
     private val pantsImageViews = mutableListOf<ImageView>()
     lateinit var shoesImagesContainer: LinearLayout
     private val shoesImageViews = mutableListOf<ImageView>()
+    lateinit var hat: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wardrobe)
+
+        hat = findViewById(R.id.hat)
+        hat.setOnClickListener {
+            val intent1 = Intent(this, add_hat::class.java)
+            startActivity(intent1)
+            finish()
+        }
 
         hatImagesContainer = findViewById(R.id.imagesContainer)
         dressImagesContainer = findViewById(R.id.dressimagesContainer) // 更新容器ID

@@ -9,6 +9,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.ContextThemeWrapper
 import android.view.View
 import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
@@ -167,8 +168,8 @@ class New_clothes : AppCompatActivity() {
         }
 
         Classification_name = findViewById(R.id.Classification_name)
-
         val Classification: ImageView = findViewById(R.id.Classification)
+        val popupMenu = PopupMenu(ContextThemeWrapper(this, R.style.CustomPopupMenu), Classification)
         Classification.setOnClickListener { view ->
             showPopupMenu(view)
         }
@@ -250,8 +251,7 @@ class New_clothes : AppCompatActivity() {
         popupMenu.menuInflater.inflate(R.menu.classification_menu, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.hat -> Classification_name.text = "帽子"
-                R.id.hair_ornaments -> Classification_name.text = "髪飾"
+                R.id.hat -> Classification_name.text = "頭飾"
                 R.id.clothes -> Classification_name.text = "上衣"
                 R.id.pants -> Classification_name.text = "褲子"
                 R.id.shoes -> Classification_name.text = "鞋子"

@@ -2,10 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/hat"
-        android:title="帽子"/>
-    <item
-        android:id="@+id/hair_ornaments"
-        android:title="髪飾"/>
+        android:title="頭飾"/>
     <item
         android:id="@+id/clothes"
         android:title="上衣"/>

@@ -20,8 +20,12 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Design.NoActionBar"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
+
+        <activity
+            android:name=".clothes.add_hat"
+            android:exported="false" />
         <activity
             android:name=".clothes.Wardrobe"
             android:exported="false" />
