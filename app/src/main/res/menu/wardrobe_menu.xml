@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/manage_clothes"
-        android:title="管理所友衣服"
+        android:title="管理所有衣服"
         android:theme="@style/MenuStyle"/>
 
 </menu>

@@ -2,6 +2,7 @@ package tw.edu.pu.csim.s1102294.e_clothes.clothes
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -10,7 +11,11 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import tw.edu.pu.csim.s1102294.e_clothes.Community.Friends
+import tw.edu.pu.csim.s1102294.e_clothes.Match.Match_home
 import tw.edu.pu.csim.s1102294.e_clothes.R
+import tw.edu.pu.csim.s1102294.e_clothes.Setting
+import tw.edu.pu.csim.s1102294.e_clothes.home
 
 class choose_add : AppCompatActivity() {
 
@@ -39,9 +44,18 @@ class choose_add : AppCompatActivity() {
     private val PICK_IMAGE_REQUEST = 1
     private var img: ImageView? = null
 
-    lateinit var camera: Button
-    lateinit var photo: Button
-    lateinit var cabinet: Button
+    lateinit var camera: ImageView
+    lateinit var photo: ImageView
+    lateinit var cabinet: ImageView
+    lateinit var camera_btn: Button
+    lateinit var photo_btn:Button
+    lateinit var cabinet_btn: Button
+
+    lateinit var Match: ImageView
+    lateinit var Home: ImageView
+    lateinit var Friend: ImageView
+    lateinit var Clothes: ImageView
+    lateinit var set: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,14 +65,66 @@ class choose_add : AppCompatActivity() {
         camera.setOnClickListener {
             checkPermission() // Step 3: 检查权限并启动相机
         }
+        camera_btn = findViewById(R.id.camera_btn)
+        camera_btn.setOnClickListener {
+            checkPermission()
+        }
         photo = findViewById(R.id.photo)
         photo.setOnClickListener {
+            openPhotoAlbum()
+        }
+        photo_btn = findViewById(R.id.photo_btn)
+        photo_btn.setOnClickListener {
             openPhotoAlbum()
         }
         cabinet = findViewById(R.id.cabinet)
         cabinet.setOnClickListener {
             val intent = Intent(this, Wardrobe::class.java)
             startActivity(intent)
+            finish()
+        }
+        cabinet_btn = findViewById(R.id.cabinet_btn)
+        cabinet_btn.setOnClickListener {
+            val intent = Intent(this, Wardrobe::class.java)
+            startActivity(intent)
+            finish()
+        }
+        Home = findViewById(R.id.Home)
+        Home.setOnClickListener {
+//            Home.text = ""
+            val intent1 = Intent(this, home::class.java)
+            startActivity(intent1)
+            finish()
+        }
+
+        Match = findViewById(R.id.Match)
+        Match.setOnClickListener {
+//            Match.text = ""
+            val intent2 = Intent(this, Match_home::class.java)
+            startActivity(intent2)
+            finish()
+        }
+
+        Clothes = findViewById(R.id.Clothes)
+        Clothes.setOnClickListener {
+//            textView9.text = "123"
+//            checkPermission()
+            val intent = Intent(this, choose_add::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        Friend = findViewById(R.id.Friend)
+        Friend.setOnClickListener {
+            val intent1 = Intent(this, Friends::class.java)
+            startActivity(intent1)
+            finish()
+        }
+
+        set = findViewById(R.id.set)
+        set.setOnClickListener {
+            val intent1 = Intent(this, Setting::class.java)
+            startActivity(intent1)
             finish()
         }
     }

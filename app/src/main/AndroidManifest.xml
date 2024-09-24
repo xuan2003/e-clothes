@@ -22,7 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
-
+        <activity
+            android:name=".clothes.add_clothes"
+            android:exported="false" />
         <activity
             android:name=".clothes.add_hat"
             android:exported="false" />

@@ -10,6 +10,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Friends
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Liked_Post
 import tw.edu.pu.csim.s1102294.e_clothes.R
+import tw.edu.pu.csim.s1102294.e_clothes.clothes.choose_add
 import tw.edu.pu.csim.s1102294.e_clothes.home
 
 class Match_home : AppCompatActivity() {
@@ -31,6 +32,13 @@ class Match_home : AppCompatActivity() {
         Match = findViewById(R.id.Match)
         Match.setOnClickListener {
             val intent1 = Intent(this, Match_home::class.java)
+            startActivity(intent1)
+            finish()
+        }
+
+        New_Clothes = findViewById(R.id.New_clothes)
+        New_Clothes.setOnClickListener {
+            val intent1 = Intent(this, choose_add::class.java)
             startActivity(intent1)
             finish()
         }
