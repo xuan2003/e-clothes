@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
         android:id="@+id/hat"
         android:title="頭飾"/>
@@ -16,5 +15,4 @@
     <item
         android:id="@+id/shoes"
         android:title="鞋子"/>
-
 </menu>
