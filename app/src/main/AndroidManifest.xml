@@ -23,6 +23,15 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".clothes.add_shoes"
+            android:exported="false" />
+        <activity
+            android:name=".clothes.add_pants"
+            android:exported="false" />
+        <activity
+            android:name=".clothes.add_dress"
+            android:exported="false" />
+        <activity
             android:name=".clothes.add_clothes"
             android:exported="false" />
         <activity

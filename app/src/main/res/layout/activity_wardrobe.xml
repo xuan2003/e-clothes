@@ -73,7 +73,7 @@
 
             <!-- 頭飾區域 -->
             <LinearLayout
-                android:id="@+id/hat"
+                android:id="@+id/hat_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -134,7 +134,7 @@
 
             <!-- 洋裝區域 -->
             <LinearLayout
-                android:id="@+id/dress"
+                android:id="@+id/dress_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -194,7 +194,7 @@
 
             <!-- 上衣區域 -->
             <LinearLayout
-                android:id="@+id/clothes"
+                android:id="@+id/clothes_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -254,7 +254,7 @@
 
             <!-- 褲子區域 -->
             <LinearLayout
-                android:id="@+id/pants"
+                android:id="@+id/pants_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -314,7 +314,7 @@
 
             <!-- 鞋子區域 -->
             <LinearLayout
-                android:id="@+id/shoes"
+                android:id="@+id/shoes_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">

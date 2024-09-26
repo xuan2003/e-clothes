@@ -26,15 +26,47 @@ class Wardrobe : AppCompatActivity() {
     private val pantsImageViews = mutableListOf<ImageView>()
     lateinit var shoesImagesContainer: LinearLayout
     private val shoesImageViews = mutableListOf<ImageView>()
-    lateinit var hat: LinearLayout
+    lateinit var hat_layout: LinearLayout
+    lateinit var dress_layout: LinearLayout
+    lateinit var clothes_loayout: LinearLayout
+    lateinit var pants_layout: LinearLayout
+    lateinit var shoes_layout: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wardrobe)
 
-        hat = findViewById(R.id.hat)
-        hat.setOnClickListener {
+        hat_layout = findViewById(R.id.hat_layout)
+        hat_layout.setOnClickListener {
             val intent1 = Intent(this, add_hat::class.java)
+            startActivity(intent1)
+            finish()
+        }
+
+        dress_layout = findViewById(R.id.dress_layout)
+        dress_layout.setOnClickListener {
+            val intent1 = Intent(this, add_dress::class.java)
+            startActivity(intent1)
+            finish()
+        }
+
+        clothes_loayout = findViewById(R.id.clothes_layout)
+        clothes_loayout.setOnClickListener {
+            val intent1 = Intent(this, add_clothes::class.java)
+            startActivity(intent1)
+            finish()
+        }
+
+        pants_layout = findViewById(R.id.pants_layout)
+        pants_layout.setOnClickListener {
+            val intent1 = Intent(this, add_pants::class.java)
+            startActivity(intent1)
+            finish()
+        }
+
+        shoes_layout = findViewById(R.id.shoes_layout)
+        shoes_layout.setOnClickListener {
+            val intent1 = Intent(this, add_shoes::class.java)
             startActivity(intent1)
             finish()
         }
@@ -51,7 +83,7 @@ class Wardrobe : AppCompatActivity() {
         initializeImageViews(pantsImagesContainer, pantsImageViews) // 初始化褲子
         initializeImageViews(shoesImagesContainer, shoesImageViews) // 初始化鞋子
 
-        downloadImages("帽子", hatImageViews) // 下載帽子圖片
+        downloadImages("頭飾", hatImageViews) // 下載帽子圖片
         downloadImages("洋裝", dressImageViews) // 下載洋裝圖片
         downloadImages("上衣", clothesImageViews) // 下載上衣圖片
         downloadImages("褲子", pantsImageViews) // 下載褲子圖片

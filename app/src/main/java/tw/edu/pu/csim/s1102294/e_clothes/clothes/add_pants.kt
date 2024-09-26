@@ -1,65 +1,25 @@
 package tw.edu.pu.csim.s1102294.e_clothes.clothes
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.media.Image
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Friends
 import tw.edu.pu.csim.s1102294.e_clothes.Match.Match_home
-import tw.edu.pu.csim.s1102294.e_clothes.Match.New_Match
-import tw.edu.pu.csim.s1102294.e_clothes.Match.edit_Profile
-import tw.edu.pu.csim.s1102294.e_clothes.Match.share_Match
 import tw.edu.pu.csim.s1102294.e_clothes.R
 import tw.edu.pu.csim.s1102294.e_clothes.Setting
 import tw.edu.pu.csim.s1102294.e_clothes.home
 
-class ImageAdapter(private val context: Context, private val imageUrls: List<String>) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+class add_pants : AppCompatActivity() {
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imageView: ImageView = itemView.findViewById(R.id.imageView)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.image_item, parent, false)
-        return ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val imageUrl = imageUrls[position]
-        downloadImage(imageUrl, holder.imageView)
-    }
-
-    override fun getItemCount() = imageUrls.size
-
-    private fun downloadImage(imageUrl: String, imageView: ImageView) {
-        val storageRef = FirebaseStorage.getInstance().reference.child(imageUrl)
-
-        storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener { bytes ->
-            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-            imageView.setImageBitmap(bitmap)
-        }.addOnFailureListener { exception ->
-            Log.e("ImageAdapter", "Error loading image: ${exception.message}")
-            // Optionally set a placeholder image or handle error state
-        }
-    }
-}
-
-class add_hat : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var imageAdapter: ImageAdapter
     private val firestore = FirebaseFirestore.getInstance()
@@ -75,8 +35,7 @@ class add_hat : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_hat)
-
+        setContentView(R.layout.activity_add_pants)
 
         Home = findViewById(R.id.Home)
         Home.setOnClickListener {
@@ -154,40 +113,23 @@ class add_hat : AppCompatActivity() {
         loadImagesFromFirestore()
     }
 
-//    private fun loadImagesFromFirestore() {
-//        val imageUrls = mutableListOf<String>()
-//
-//        // 代替從 Firestore 獲取圖片的固定網址
-//        imageUrls.add("/images/c5fbabe9-4aa2-4af6-9e26-d23a1c8ac3af")
-//        imageUrls.add("/images/0eb6ebb5-bfcf-462f-af3e-cbc411ec60c1")
-//        imageUrls.add("/images/d39ccd08-c7b9-4db1-9471-c63627ba1a80")
-//        imageUrls.add("/images/41b09662-5355-494e-952b-7b628d9137e9")
-//
-//        // 創建並設置 Adapter
-//        imageAdapter = ImageAdapter(this, imageUrls)
-//        recyclerView.adapter = imageAdapter
-//    }
-
     private fun loadImagesFromFirestore() {
         val imageUrls = mutableListOf<String>()
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
-        // Retrieve image URLs from Firestore (assuming the collection name is "hats")
+        // Retrieve image URLs from Firestore (assuming the collection name is "dresses")
         if (userId != null) {
             firestore.collection(userId)
                 .get()
                 .addOnSuccessListener { documents ->
                     for (document in documents) {
-                        // 確保文件名稱包含"帽子"
-                        if (document.id.contains("頭飾")) {
+                        // Ensure the document contains "dress" (裙子)
+                        if (document.id.contains("褲子")) {
                             val imageUrl = document.getString("圖片網址")
                             if (!imageUrl.isNullOrEmpty()) {
                                 imageUrls.add(imageUrl)
                             } else {
-                                Log.d(
-                                    "Firestore",
-                                    "Empty image URL found in document: ${document.id}"
-                                )
+                                Log.d("Firestore", "Empty image URL found in document: ${document.id}")
                             }
                         }
                     }
@@ -195,6 +137,7 @@ class add_hat : AppCompatActivity() {
                     // Create and set the adapter
                     imageAdapter = ImageAdapter(this, imageUrls)
                     recyclerView.adapter = imageAdapter
+                    imageAdapter.notifyDataSetChanged()  // Notify the adapter after setting it
                 }
                 .addOnFailureListener { exception ->
                     Log.e("Firestore", "Error loading images: ${exception.message}")

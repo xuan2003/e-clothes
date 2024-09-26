@@ -117,7 +117,7 @@
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:layout_marginRight="20dp"
-                android:text="帽子" />
+                android:text="頭飾" />
 
             <ImageView
                 android:id="@+id/Classification"
