@@ -12,9 +12,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,10 +30,22 @@ import tw.edu.pu.csim.s1102294.e_clothes.R
 import tw.edu.pu.csim.s1102294.e_clothes.Setting
 import tw.edu.pu.csim.s1102294.e_clothes.home
 
-class ImageAdapter(private val context: Context, private val imageUrls: List<String>) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+class ImageAdapter(private val context: Context, private val imageUrls: MutableList<String>) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
+
+        init {
+            // 設置長按監聽器
+            itemView.setOnLongClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    // 調用刪除方法
+                    showDeleteConfirmationDialog(position)
+                }
+                true
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -54,12 +68,73 @@ class ImageAdapter(private val context: Context, private val imageUrls: List<Str
             imageView.setImageBitmap(bitmap)
         }.addOnFailureListener { exception ->
             Log.e("ImageAdapter", "Error loading image: ${exception.message}")
-            // Optionally set a placeholder image or handle error state
         }
     }
-}
 
-class add_hat : AppCompatActivity() {
+    private fun showDeleteConfirmationDialog(position: Int) {
+        // 獲取要刪除的圖片URL
+        val imageUrl = imageUrls[position]
+
+        // 顯示確認對話框
+        AlertDialog.Builder(context)
+            .setTitle("刪除確認")
+            .setMessage("確定要刪除這張圖片嗎？")
+            .setPositiveButton("是的") { _, _ ->
+                // 從 RecyclerView 刪除該圖片
+                removeAt(position)
+                // 刪除 Firebase Storage 中的圖片
+                deleteImageFromStorage(imageUrl)
+                // 刪除 Firestore 中對應的文檔
+                deleteFromFirestore(imageUrl)
+            }
+            .setNegativeButton("取消", null)
+            .show()
+    }
+
+    private fun deleteImageFromStorage(imageUrl: String) {
+        val storageRef = FirebaseStorage.getInstance().reference.child(imageUrl)
+
+        storageRef.delete()
+            .addOnSuccessListener {
+                Log.d("ImageAdapter", "Image successfully deleted from Storage")
+            }
+            .addOnFailureListener { e ->
+                Log.e("ImageAdapter", "Error deleting image from Storage: ${e.message}")
+            }
+    }
+
+    private fun deleteFromFirestore(imageUrl: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val db = FirebaseFirestore.getInstance()
+
+        if (userId != null) {
+            // 查詢 Firestore 中與 imageUrl 匹配的文檔，然後刪除
+            db.collection(userId)
+                .whereEqualTo("圖片網址", imageUrl)  // 假設 Firestore 中的字段名是 "圖片網址"
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    for (document in querySnapshot) {
+                        db.collection(userId).document(document.id).delete()
+                            .addOnSuccessListener {
+                                Log.d("ImageAdapter", "Document successfully deleted from Firestore")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("ImageAdapter", "Error deleting document from Firestore: ${e.message}")
+                            }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("ImageAdapter", "Error finding document in Firestore: ${e.message}")
+                }
+        }
+    }
+
+    fun removeAt(position: Int) {
+        imageUrls.removeAt(position)
+        notifyItemRemoved(position)
+    }
+}
+    class add_hat : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var imageAdapter: ImageAdapter
     private val firestore = FirebaseFirestore.getInstance()
@@ -152,6 +227,8 @@ class add_hat : AppCompatActivity() {
 
         // Load images from Firestore
         loadImagesFromFirestore()
+        // 設置手勢刪除
+        setUpItemTouchHelper()
     }
 
 //    private fun loadImagesFromFirestore() {
@@ -201,4 +278,21 @@ class add_hat : AppCompatActivity() {
                 }
         }
     }
+
+        private fun setUpItemTouchHelper() {
+            val itemTouchHelper = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+                override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val position = viewHolder.adapterPosition
+                    imageAdapter.removeAt(position)
+                    // 這裡可以添加刪除資料庫中相應圖片的代碼
+                    // 例如：deleteImageFromFirestore(imageUrls[position])
+                }
+            }
+
+            ItemTouchHelper(itemTouchHelper).attachToRecyclerView(recyclerView)
+        }
 }
