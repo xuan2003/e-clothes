@@ -10,8 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.ContextThemeWrapper
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,6 +33,27 @@ import java.io.IOException
 import java.util.*
 
 class New_clothes : AppCompatActivity() {
+
+    class LabelAdapter(private val labels: List<String>) : RecyclerView.Adapter<LabelAdapter.LabelViewHolder>() {
+
+        class LabelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            val textView: TextView = itemView.findViewById(R.id.textView)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LabelViewHolder {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_label, parent, false)
+            return LabelViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: LabelViewHolder, position: Int) {
+            holder.textView.text = labels[position]
+        }
+
+        override fun getItemCount(): Int {
+            return labels.size
+        }
+    }
 
     lateinit var Match: ImageView
     lateinit var Home: ImageView
@@ -123,7 +148,8 @@ class New_clothes : AppCompatActivity() {
                 if (imageUri != null) {
                     firebaseHelper.uploadImage(this, imageUri, onSuccess = { fullUrl ->
                         // Extract the relative path from the full URL
-                        val relativePath = fullUrl.substringAfter("/o/").substringBefore("?alt=media")
+                        val relativePath =
+                            fullUrl.substringAfter("/o/").substringBefore("?alt=media")
                         imageUrl = relativePath  // Now `imageUrl` stores the relative path
                         saveDataToFirestore(db)   // Proceed to save the data to Firestore
                     }, onFailure = { e ->
@@ -144,8 +170,11 @@ class New_clothes : AppCompatActivity() {
                 if (imageUri != null) {
                     firebaseHelper.uploadImage(this, imageUri, onSuccess = { fullUrl ->
                         // Extract the relative path, replace %2F with /, and add a leading /
-                        val relativePath = "/" + fullUrl.substringAfter("/o/").substringBefore("?alt=media").replace("%2F", "/")
-                        imageUrl = relativePath  // Now `imageUrl` stores the cleaned relative path with a leading /
+                        val relativePath =
+                            "/" + fullUrl.substringAfter("/o/").substringBefore("?alt=media")
+                                .replace("%2F", "/")
+                        imageUrl =
+                            relativePath  // Now `imageUrl` stores the cleaned relative path with a leading /
                         saveDataToFirestore(db)   // Proceed to save the data to Firestore
                     }, onFailure = { e ->
                         Toast.makeText(this, "上傳失敗: ${e.message}", Toast.LENGTH_LONG).show()
@@ -169,29 +198,34 @@ class New_clothes : AppCompatActivity() {
 
         Classification_name = findViewById(R.id.Classification_name)
         val Classification: ImageView = findViewById(R.id.Classification)
-        val popupMenu = PopupMenu(ContextThemeWrapper(this, R.style.CustomPopupMenu), Classification)
+        val popupMenu =
+            PopupMenu(ContextThemeWrapper(this, R.style.CustomPopupMenu), Classification)
         Classification.setOnClickListener { view ->
             showPopupMenu(view)
         }
 
+        // 初始化 RecyclerView 和 GridLayoutManager
+        val recyclerView = findViewById<RecyclerView>(R.id.labelRecyclerView)
+        val labelList = mutableListOf<String>()
+        val adapter = LabelAdapter(labelList)
+        recyclerView.adapter = adapter
+
+// 設定每行顯示 5 個項目
+        val gridLayoutManager = GridLayoutManager(this, 4)
+        recyclerView.layoutManager = gridLayoutManager
         label = findViewById(R.id.label)
+
+// 添加新標籤的邏輯
         add_label = findViewById(R.id.add_label)
-        val label_layout = findViewById<LinearLayout>(R.id.label_layout)
         add_label.setOnClickListener {
             if (label.text.isNotEmpty()) {
-                val newtxv = TextView(this)
-                newtxv.id = View.generateViewId()
-                newtxv.setPadding(10, 10, 10, 10)
-                newtxv.text = label.text
-                newtxv.textSize = 20f
-                newtxv.setTextColor(Color.parseColor("#000000"))
-
-                label_layout.addView(newtxv)
-                label.text.clear()
-                labelTexts.add(newtxv.text.toString())
+                labelList.add(label.text.toString())  // 添加到數據列表
+                adapter.notifyItemInserted(labelList.size - 1)  // 通知 RecyclerView 更新
+                label.text.clear()  // 清空輸入框
             } else {
                 Toast.makeText(this, "標籤不能為空", Toast.LENGTH_SHORT).show()
             }
+
         }
     }
 

@@ -12,10 +12,20 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import tw.edu.pu.csim.s1102294.e_clothes.Community.Friends
+import tw.edu.pu.csim.s1102294.e_clothes.Match.Match_home
 import tw.edu.pu.csim.s1102294.e_clothes.R
+import tw.edu.pu.csim.s1102294.e_clothes.Setting
 import tw.edu.pu.csim.s1102294.e_clothes.home
 
 class Wardrobe : AppCompatActivity() {
+
+    lateinit var Match: ImageView
+    lateinit var Home: ImageView
+    lateinit var Friend: ImageView
+    lateinit var New_clothes: ImageView
+    lateinit var set: ImageView
+
     lateinit var hatImagesContainer: LinearLayout
     private val hatImageViews = mutableListOf<ImageView>()
     lateinit var dressImagesContainer: LinearLayout // 將髮飾容器改為洋裝
@@ -35,6 +45,45 @@ class Wardrobe : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wardrobe)
+
+        Home = findViewById(R.id.Home)
+        Home.setOnClickListener {
+//            Home.text = ""
+            val intent1 = Intent(this, home::class.java)
+            startActivity(intent1)
+            finish()
+        }
+
+        Match = findViewById(R.id.Match)
+        Match.setOnClickListener {
+//            Match.text = ""
+            val intent2 = Intent(this, Match_home::class.java)
+            startActivity(intent2)
+            finish()
+        }
+
+        New_clothes = findViewById(R.id.New_clothes)
+        New_clothes.setOnClickListener {
+//            textView9.text = "123"
+//            checkPermission()
+            val intent = Intent(this, choose_add::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        Friend = findViewById(R.id.Friend)
+        Friend.setOnClickListener {
+            val intent1 = Intent(this, Friends::class.java)
+            startActivity(intent1)
+            finish()
+        }
+
+        set = findViewById(R.id.set)
+        set.setOnClickListener {
+            val intent1 = Intent(this, Setting::class.java)
+            startActivity(intent1)
+            finish()
+        }
 
         hat_layout = findViewById(R.id.hat_layout)
         hat_layout.setOnClickListener {
