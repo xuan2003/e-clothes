@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.net.wifi.EasyConnectStatusCallback
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -34,7 +36,10 @@ import java.util.*
 
 class New_clothes : AppCompatActivity() {
 
-    class LabelAdapter(private val labels: List<String>) : RecyclerView.Adapter<LabelAdapter.LabelViewHolder>() {
+    class LabelAdapter(
+        private val labels: MutableList<String>,
+        private val onLabelLongPress: (Int) -> Unit // Pass the index of the label to be deleted
+    ) : RecyclerView.Adapter<LabelAdapter.LabelViewHolder>() {
 
         class LabelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val textView: TextView = itemView.findViewById(R.id.textView)
@@ -48,12 +53,22 @@ class New_clothes : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: LabelViewHolder, position: Int) {
             holder.textView.text = labels[position]
+
+            // Set long press listener on each label
+            holder.itemView.setOnLongClickListener {
+                onLabelLongPress(position) // Trigger long press action
+                true
+            }
         }
 
         override fun getItemCount(): Int {
             return labels.size
         }
     }
+
+    private val labelList = mutableListOf<String>()
+    private lateinit var adapter: LabelAdapter
+
 
     lateinit var Match: ImageView
     lateinit var Home: ImageView
@@ -65,12 +80,19 @@ class New_clothes : AppCompatActivity() {
     lateinit var previous: ImageView
     lateinit var clothes: ImageView
     lateinit var Classification_name: TextView
+    lateinit var weather_name: TextView
     lateinit var add_label: ImageView
     lateinit var label: EditText
     var userId: String? = null
     lateinit var firebaseHelper: FirebaseHelper
     var imageUrl: String? = null // 新增用來存儲圖片的URL
     private val labelTexts = mutableListOf<String>()
+
+    lateinit var handsome: Button
+    lateinit var cute: Button
+    lateinit var daily: Button
+    lateinit var easy: Button
+    lateinit var formal: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,6 +110,32 @@ class New_clothes : AppCompatActivity() {
         }
 
         val db = FirebaseFirestore.getInstance()
+
+        label = findViewById(R.id.label)
+        handsome = findViewById(R.id.handsome)
+        handsome.setOnClickListener {
+            label.setText(handsome.text)
+        }
+
+        cute = findViewById(R.id.cute)
+        cute.setOnClickListener {
+            label.setText(cute.text)
+        }
+
+        daily = findViewById(R.id.daily)
+        daily.setOnClickListener {
+            label.setText(daily.text)
+        }
+
+        easy = findViewById(R.id.easy)
+        easy.setOnClickListener {
+            label.setText(easy.text)
+        }
+
+        formal = findViewById(R.id.formal)
+        formal.setOnClickListener {
+            label.setText(formal.text)
+        }
 
         clothes = findViewById(R.id.clothes)
 
@@ -124,6 +172,10 @@ class New_clothes : AppCompatActivity() {
         }
 
         addClothes = findViewById(R.id.addClothes)
+        addClothes.setOnClickListener {
+            val intent2 = Intent(this, choose_add::class.java)
+        }
+
         Friend = findViewById(R.id.Friend)
         Friend.setOnClickListener {
             val intent1 = Intent(this, Friends::class.java)
@@ -203,30 +255,62 @@ class New_clothes : AppCompatActivity() {
         Classification.setOnClickListener { view ->
             showPopupMenu(view)
         }
+        weather_name = findViewById(R.id.weather_name)
+        val weather: ImageView = findViewById(R.id.weather)
+        val popupMenu1 =
+            PopupMenu(ContextThemeWrapper(this, R.style.CustomPopupMenu), weather)
+        weather.setOnClickListener { view ->
+            showWeatherMenu(view)
+        }
 
-        // 初始化 RecyclerView 和 GridLayoutManager
+
+        // 初始化 RecyclerView 和 Adapter
         val recyclerView = findViewById<RecyclerView>(R.id.labelRecyclerView)
-        val labelList = mutableListOf<String>()
-        val adapter = LabelAdapter(labelList)
+        adapter = LabelAdapter(labelList) { position ->
+            showDeleteDialog(position) // Show confirmation dialog on long press
+        }
         recyclerView.adapter = adapter
 
-// 設定每行顯示 5 個項目
+        // 設定每行顯示 4 個項目
         val gridLayoutManager = GridLayoutManager(this, 4)
         recyclerView.layoutManager = gridLayoutManager
-        label = findViewById(R.id.label)
 
 // 添加新標籤的邏輯
         add_label = findViewById(R.id.add_label)
         add_label.setOnClickListener {
             if (label.text.isNotEmpty()) {
-                labelList.add(label.text.toString())  // 添加到數據列表
-                adapter.notifyItemInserted(labelList.size - 1)  // 通知 RecyclerView 更新
-                label.text.clear()  // 清空輸入框
+                val newLabel = label.text.toString()
+
+                // Add to display list
+                labelList.add(newLabel)
+                adapter.notifyItemInserted(labelList.size - 1)
+
+                // Add to the list for Firestore
+                labelTexts.add(newLabel)
+
+                // Clear the input field
+                label.text.clear()
             } else {
                 Toast.makeText(this, "標籤不能為空", Toast.LENGTH_SHORT).show()
             }
-
         }
+    }
+
+    // 長按刪除標籤的方法
+    private fun showDeleteDialog(position: Int) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("刪除標籤")
+        builder.setMessage("確定要刪除此標籤嗎？")
+        builder.setPositiveButton("是") { _, _ ->
+            // 確認刪除標籤
+            labelList.removeAt(position)  // 從顯示列表中刪除
+            labelTexts.removeAt(position) // 從要保存到 Firestore 的列表中同步刪除
+
+            // 通知適配器有項目被刪除，刷新 RecyclerView
+            adapter.notifyItemRemoved(position)
+        }
+        builder.setNegativeButton("否", null)
+        builder.show()
     }
 
     private fun saveDataToFirestore(db: FirebaseFirestore) {
@@ -234,6 +318,7 @@ class New_clothes : AppCompatActivity() {
         if (id != null) {
             val category = Classification_name.text.toString()
             Log.d("New_clothes", "Attempting to save category: $category")
+            val weather_category = weather_name.text.toString()
 
             db.collection(id)
                 .whereEqualTo("服裝種類", category)
@@ -251,6 +336,7 @@ class New_clothes : AppCompatActivity() {
 
                     val user = hashMapOf(
                         "服裝種類" to category,
+                        "天氣種類" to weather_category,
                         "圖片網址" to imageUrl,
                         "標籤" to labelTexts
                     )
@@ -297,6 +383,21 @@ class New_clothes : AppCompatActivity() {
         popupMenu.show()
     }
 
+    private fun showWeatherMenu(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        popupMenu.menuInflater.inflate(R.menu.weather_menu, popupMenu.menu)
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.sunny -> weather_name.text = "晴天"
+                R.id.shower -> weather_name.text = "雨天"
+                R.id.cloudy -> weather_name.text = "陰天"
+                R.id.raining -> weather_name.text = "雷雨"
+                else -> return@setOnMenuItemClickListener false
+            }
+            true
+        }
+        popupMenu.show()
+    }
 
     private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri? {
         val file = File(context.cacheDir, "${UUID.randomUUID()}.jpg")
@@ -311,4 +412,5 @@ class New_clothes : AppCompatActivity() {
             null
         }
     }
+
 }

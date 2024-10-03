@@ -126,6 +126,47 @@
                 android:layout_marginTop="10dp"
                 app:srcCompat="@drawable/angle_right" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#AAA09E"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="天氣種類"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/weather_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                android:gravity="right"
+                android:layout_marginRight="20dp"
+                android:text="晴天" />
+
+            <ImageView
+                android:id="@+id/weather"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/angle_right" />
 
         </LinearLayout>
 
@@ -155,50 +196,50 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/handsome"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/corners_login"
-                android:textSize="10dp"
-                android:text="Button" />
+                android:textSize="15dp"
+                android:text="帥氣" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/cute"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@drawable/corners_login"
-                android:textSize="10dp"
-                android:text="Button" />
+                android:textSize="15dp"
+                android:text="可愛" />
 
             <Button
-                android:id="@+id/button4"
+                android:id="@+id/daily"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@drawable/corners_login"
-                android:textSize="10dp"
-                android:text="Button" />
+                android:textSize="15dp"
+                android:text="日常" />
 
             <Button
-                android:id="@+id/button5"
+                android:id="@+id/easy"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@drawable/corners_login"
-                android:textSize="10dp"
-                android:text="Button" />
+                android:textSize="15dp"
+                android:text="輕鬆" />
 
             <Button
-                android:id="@+id/button6"
+                android:id="@+id/formal"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@drawable/corners_login"
-                android:textSize="10dp"
-                android:text="Button" />
+                android:textSize="15dp"
+                android:text="正式" />
         </LinearLayout>
 
         <LinearLayout
