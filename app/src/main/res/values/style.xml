@@ -16,4 +16,9 @@
         <item name="android:popupBackground">#AAA09E</item> <!-- 修改背景色 -->
         <item name="android:textColor">#67595E</item> <!-- 修改文字顏色 -->
     </style>
+
+    <style name="CircularImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

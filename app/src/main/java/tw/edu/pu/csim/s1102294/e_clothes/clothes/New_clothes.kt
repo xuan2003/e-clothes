@@ -193,27 +193,27 @@ class New_clothes : AppCompatActivity() {
         finish = findViewById(R.id.finish)
         firebaseHelper = FirebaseHelper()
 
-        finish.setOnClickListener {
-            val bitmap = (clothes.drawable as? BitmapDrawable)?.bitmap
-            if (bitmap != null) {
-                val imageUri = getImageUriFromBitmap(this, bitmap)
-                if (imageUri != null) {
-                    firebaseHelper.uploadImage(this, imageUri, onSuccess = { fullUrl ->
-                        // Extract the relative path from the full URL
-                        val relativePath =
-                            fullUrl.substringAfter("/o/").substringBefore("?alt=media")
-                        imageUrl = relativePath  // Now `imageUrl` stores the relative path
-                        saveDataToFirestore(db)   // Proceed to save the data to Firestore
-                    }, onFailure = { e ->
-                        Toast.makeText(this, "上傳失敗: ${e.message}", Toast.LENGTH_LONG).show()
-                    })
-                } else {
-                    Toast.makeText(this, "無法取得URL", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(this, "加載失敗", Toast.LENGTH_SHORT).show()
-            }
-        }
+//        finish.setOnClickListener {
+//            val bitmap = (clothes.drawable as? BitmapDrawable)?.bitmap
+//            if (bitmap != null) {
+//                val imageUri = getImageUriFromBitmap(this, bitmap)
+//                if (imageUri != null) {
+//                    firebaseHelper.uploadImage(this, imageUri, onSuccess = { fullUrl ->
+//                        // Extract the relative path from the full URL
+//                        val relativePath =
+//                            fullUrl.substringAfter("/o/").substringBefore("?alt=media")
+//                        imageUrl = relativePath  // Now `imageUrl` stores the relative path
+//                        saveDataToFirestore(db)   // Proceed to save the data to Firestore
+//                    }, onFailure = { e ->
+//                        Toast.makeText(this, "上傳失敗: ${e.message}", Toast.LENGTH_LONG).show()
+//                    })
+//                } else {
+//                    Toast.makeText(this, "無法取得URL", Toast.LENGTH_SHORT).show()
+//                }
+//            } else {
+//                Toast.makeText(this, "加載失敗", Toast.LENGTH_SHORT).show()
+//            }
+//        }
 
         finish.setOnClickListener {
             val bitmap = (clothes.drawable as? BitmapDrawable)?.bitmap

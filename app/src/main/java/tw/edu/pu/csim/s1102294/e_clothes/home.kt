@@ -119,7 +119,7 @@ class home : AppCompatActivity() {
 
         Friend = findViewById(R.id.Friend)
         Friend.setOnClickListener {
-            val intent1 = Intent(this, Friends::class.java)
+            val intent1 = Intent(this, Personal_Page::class.java)
             startActivity(intent1)
             finish()
         }
