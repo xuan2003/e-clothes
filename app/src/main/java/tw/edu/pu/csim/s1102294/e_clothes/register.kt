@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 
 class register : AppCompatActivity() {
@@ -67,6 +68,23 @@ class register : AppCompatActivity() {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+
+                    val id = FirebaseAuth.getInstance().currentUser?.uid
+                    val db = FirebaseFirestore.getInstance()
+
+                    if (id != null) {
+                        val user = hashMapOf(
+                            "頭貼圖片" to "",
+                            "使用者名稱" to "",
+                            "生日" to "",
+                            "性別" to "",
+                            "個性簽名" to ""
+                        )
+
+                    } else {
+                        Toast.makeText(this, "用户未登录", Toast.LENGTH_LONG).show()
+                    }
+
                     Toast.makeText(this, "註冊成功！請登入帳號", Toast.LENGTH_SHORT).show()
                     clearUserAuthState() // 清除用戶驗證狀態
                     // 執行註冊成功後的相應操作，例如導航到登入畫面

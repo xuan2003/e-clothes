@@ -15,6 +15,7 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Friends
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Liked_Post
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Personal_Page
@@ -45,13 +46,47 @@ class edit_Profile : AppCompatActivity() {
         val gender: EditText = findViewById(R.id.gender)
         val sign: EditText = findViewById(R.id.sign)
         val db = FirebaseFirestore.getInstance()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
 
         circularImageView = findViewById(R.id.circularImageView)
 
-        circularImageView.setOnClickListener {
-            openGallery() // Open the gallery
+        // Load user data from Firestore on page load
+        if (userId != null) {
+            val documentRef = db.collection(userId).document("個人資料")
+
+            documentRef.get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        // Retrieve user data
+                        val name = document.getString("使用者名稱")
+                        val birthdayStr = document.getString("生日")
+                        val genderStr = document.getString("性別")
+                        val signature = document.getString("個性簽名")
+                        val profileImageUrl = document.getString("頭貼圖片")
+
+                        // Update the UI with the retrieved data
+                        user_name.setText(name ?: "")
+                        birthday.setText(birthdayStr ?: "")
+                        gender.setText(genderStr ?: "")
+                        sign.setText(signature ?: "")
+
+                        // Load the profile image into the circular ImageView using Picasso
+                        if (profileImageUrl != null) {
+                            Picasso.get().load(profileImageUrl).into(circularImageView)
+                        }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "無法載入個人資料: ${e.message}", Toast.LENGTH_LONG).show()
+                }
         }
 
+        // Set up click listeners for other UI elements
+        circularImageView.setOnClickListener {
+            openGallery() // Open the gallery to select a new profile image
+        }
+
+        // Set up the other navigation and button click listeners (Home, Match, etc.)
         Home = findViewById(R.id.Home)
         Home.setOnClickListener {
             startActivity(Intent(this, home::class.java))
@@ -62,11 +97,6 @@ class edit_Profile : AppCompatActivity() {
         Match.setOnClickListener {
             startActivity(Intent(this, Match_home::class.java))
             finish()
-        }
-
-        Clothes = findViewById(R.id.Clothes)
-        Clothes.setOnClickListener {
-            // Implement related logic here
         }
 
         Friend = findViewById(R.id.Friend)
@@ -81,41 +111,10 @@ class edit_Profile : AppCompatActivity() {
             finish()
         }
 
+        // Handle the OK button click to update user data
         ok = findViewById(R.id.ok)
         ok.setOnClickListener {
-            val id = FirebaseAuth.getInstance().currentUser?.uid
-
-            val newName = user_name.text.toString()
-
-            if (id != null) {
-                val user = hashMapOf(
-                    "使用者名稱" to newName,
-                    "生日" to birthday.text.toString(),
-                    "性別" to gender.text.toString(),
-                    "個性簽名" to sign.text.toString()
-                )
-
-                // Use user ID and "個人資料" to identify the document ID
-                val documentId = "個人資料"
-
-                // Update Firestore with user data
-                db.collection(id)
-                    .document(documentId)
-                    .set(user)
-                    .addOnSuccessListener {
-                        // After updating user data, upload the image if it's selected
-                        if (imageUri != null) {
-                            uploadImageToFirebase(imageUri!!)
-                        } else {
-                            Toast.makeText(this, "更新成功", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(this, "更新失败: ${e.message}", Toast.LENGTH_LONG).show()
-                    }
-            } else {
-                Toast.makeText(this, "用户未登录", Toast.LENGTH_LONG).show()
-            }
+            updateProfileData(userId, user_name.text.toString(), birthday.text.toString(), gender.text.toString(), sign.text.toString())
         }
 
         txv_change = findViewById(R.id.txv_change)
@@ -124,6 +123,7 @@ class edit_Profile : AppCompatActivity() {
             finish()
         }
 
+        // Menu button logic
         val menu = findViewById<ImageView>(R.id.menu)
         menu.setOnClickListener {
             val popup = PopupMenu(this, menu)
@@ -131,31 +131,26 @@ class edit_Profile : AppCompatActivity() {
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.add -> {
-                        Toast.makeText(this, "編輯個人資料", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this, edit_Profile::class.java))
                         finish()
                         true
                     }
                     R.id.check -> {
-                        Toast.makeText(this, "編輯精選穿搭", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this, edit_Chosen_Match::class.java))
                         finish()
                         true
                     }
                     R.id.share -> {
-                        Toast.makeText(this, "分享搭配", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this, share_Match::class.java))
                         finish()
                         true
                     }
                     R.id.like -> {
-                        Toast.makeText(this, "喜歡的貼文", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this, Liked_Post::class.java))
                         finish()
                         true
                     }
                     R.id.settings -> {
-                        Toast.makeText(this, "設定", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this, Setting::class.java))
                         finish()
                         true
@@ -182,40 +177,58 @@ class edit_Profile : AppCompatActivity() {
         }
     }
 
-    // Upload the selected image to Firebase Storage
+    private fun updateProfileData(userId: String?, name: String, birthday: String, gender: String, sign: String) {
+        if (userId != null) {
+            val db = FirebaseFirestore.getInstance()
+
+            val user = hashMapOf(
+                "使用者名稱" to name,
+                "生日" to birthday,
+                "性別" to gender,
+                "個性簽名" to sign
+            )
+
+            db.collection(userId).document("個人資料")
+                .set(user)
+                .addOnSuccessListener {
+                    if (imageUri != null) {
+                        uploadImageToFirebase(imageUri!!)
+                    } else {
+                        Toast.makeText(this, "更新成功", Toast.LENGTH_LONG).show()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "更新失败: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+        }
+    }
+
     private fun uploadImageToFirebase(imageUri: Uri) {
-        val storageReference = FirebaseStorage.getInstance().reference.child("profile_images/${System.currentTimeMillis()}.jpg")
+        val storageReference = FirebaseStorage.getInstance().reference.child("profile_images/${System.currentTimeMillis()}.png")
 
         storageReference.putFile(imageUri)
-            .addOnSuccessListener { taskSnapshot ->
-                // Get the download URL
+            .addOnSuccessListener {
                 storageReference.downloadUrl.addOnSuccessListener { fullUrl ->
-                    // Extract the relative path
-                    val relativePath = "/" + fullUrl.toString().substringAfter("/o/").substringBefore("?alt=media")
-                        .replace("%2F", "/")
-
-                    // Now `relativePath` stores the cleaned relative path with a leading /
-                    saveImageUrlToFirestore(relativePath) // Pass the cleaned URL to Firestore saving method
+                    saveImageUrlToFirestore(fullUrl.toString())
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Image upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "頭貼上傳失敗: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
-    // Save the image URL to Firestore
     private fun saveImageUrlToFirestore(imageUrl: String) {
         val db = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
         if (userId != null) {
-            val documentRef = db.collection(userId).document("個人資料")
-            documentRef.update("頭貼圖片", imageUrl)
+            db.collection(userId).document("個人資料")
+                .update("頭貼圖片", imageUrl)
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Image URL saved to Firestore", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "更新成功", Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(this, "Failed to save URL: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "更新失敗: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
