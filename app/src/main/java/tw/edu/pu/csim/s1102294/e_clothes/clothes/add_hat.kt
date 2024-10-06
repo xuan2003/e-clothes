@@ -104,28 +104,31 @@ class ImageAdapter(private val context: Context, private val imageUrls: MutableL
     }
 
     private fun deleteFromFirestore(imageUrl: String) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val currentUser = FirebaseAuth.getInstance().currentUser
         val db = FirebaseFirestore.getInstance()
 
-        if (userId != null) {
+        if (currentUser != null) {
+            val email = currentUser.email
             // 查詢 Firestore 中與 imageUrl 匹配的文檔，然後刪除
-            db.collection(userId)
-                .whereEqualTo("圖片網址", imageUrl)  // 假設 Firestore 中的字段名是 "圖片網址"
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    for (document in querySnapshot) {
-                        db.collection(userId).document(document.id).delete()
-                            .addOnSuccessListener {
-                                Log.d("ImageAdapter", "Document successfully deleted from Firestore")
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e("ImageAdapter", "Error deleting document from Firestore: ${e.message}")
-                            }
+            if (email != null) {
+                db.collection(email)
+                    .whereEqualTo("圖片網址", imageUrl)  // 假設 Firestore 中的字段名是 "圖片網址"
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        for (document in querySnapshot) {
+                            db.collection(email).document(document.id).delete()
+                                .addOnSuccessListener {
+                                    Log.d("ImageAdapter", "Document successfully deleted from Firestore")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e("ImageAdapter", "Error deleting document from Firestore: ${e.message}")
+                                }
+                        }
                     }
-                }
-                .addOnFailureListener { e ->
-                    Log.e("ImageAdapter", "Error finding document in Firestore: ${e.message}")
-                }
+                    .addOnFailureListener { e ->
+                        Log.e("ImageAdapter", "Error finding document in Firestore: ${e.message}")
+                    }
+            }
         }
     }
 
@@ -245,39 +248,46 @@ class ImageAdapter(private val context: Context, private val imageUrls: MutableL
 //        recyclerView.adapter = imageAdapter
 //    }
 
-    private fun loadImagesFromFirestore() {
-        val imageUrls = mutableListOf<String>()
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        private fun loadImagesFromFirestore() {
+            val imageUrls = mutableListOf<String>()
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
 
-        // Retrieve image URLs from Firestore (assuming the collection name is "hats")
-        if (userId != null) {
-            firestore.collection(userId)
-                .get()
-                .addOnSuccessListener { documents ->
-                    for (document in documents) {
-                        // 確保文件名稱包含"帽子"
-                        if (document.id.contains("頭飾")) {
-                            val imageUrl = document.getString("圖片網址")
-                            if (!imageUrl.isNullOrEmpty()) {
-                                imageUrls.add(imageUrl)
-                            } else {
-                                Log.d(
-                                    "Firestore",
-                                    "Empty image URL found in document: ${document.id}"
-                                )
+            // Check if user is authenticated
+            if (userId != null) {
+                val email = FirebaseAuth.getInstance().currentUser?.email // Get email
+                Log.d("Firestore", "Loading images for user: $email") // Log email
+
+                // Retrieve image URLs from Firestore using the user's email
+                if (email != null) {
+                    firestore.collection(email) // Use email as the collection name
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            for (document in documents) {
+                                Log.d("Firestore", "Found document: ${document.id}") // Log document ID
+                                if (document.id.contains("頭飾")) {
+                                    val imageUrl = document.getString("圖片網址")
+                                    if (!imageUrl.isNullOrEmpty()) {
+                                        imageUrls.add(imageUrl)
+                                        Log.d("Firestore", "Added image URL: $imageUrl") // Log the added image URL
+                                    } else {
+                                        Log.d("Firestore", "Empty image URL found in document: ${document.id}")
+                                    }
+                                }
                             }
+                            // Create and set the adapter
+                            imageAdapter = ImageAdapter(this, imageUrls)
+                            recyclerView.adapter = imageAdapter
                         }
-                    }
-
-                    // Create and set the adapter
-                    imageAdapter = ImageAdapter(this, imageUrls)
-                    recyclerView.adapter = imageAdapter
+                        .addOnFailureListener { exception ->
+                            Log.e("Firestore", "Error loading images: ${exception.message}")
+                        }
+                } else {
+                    Log.e("Firestore", "User email is null.")
                 }
-                .addOnFailureListener { exception ->
-                    Log.e("Firestore", "Error loading images: ${exception.message}")
-                }
+            } else {
+                Log.e("Firestore", "User is not authenticated.")
+            }
         }
-    }
 
         private fun setUpItemTouchHelper() {
             val itemTouchHelper = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {

@@ -81,7 +81,7 @@
             android:textColor="@color/black" />
 
         <EditText
-            android:id="@+id/friend_name"
+            android:id="@+id/searchFriendEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
@@ -91,13 +91,26 @@
             android:theme="@style/MyEditText" />
 
         <Button
-            android:id="@+id/Search"
+            android:id="@+id/searchFriendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/corners_login"
             android:textColor="@color/black"
             android:text="搜尋" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/searchResultsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp" />
+        </LinearLayout>
 
 
     </LinearLayout>
@@ -143,7 +156,7 @@
             app:srcCompat="@drawable/users" />
 
         <ImageView
-            android:id="@+id/imageView8"
+            android:id="@+id/set"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_weight="1"

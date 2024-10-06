@@ -314,56 +314,60 @@ class New_clothes : AppCompatActivity() {
     }
 
     private fun saveDataToFirestore(db: FirebaseFirestore) {
-        val id = FirebaseAuth.getInstance().currentUser?.uid
-        if (id != null) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            // 使用電子郵件地址作為文檔ID
+            val email = currentUser.email
             val category = Classification_name.text.toString()
             Log.d("New_clothes", "Attempting to save category: $category")
             val weather_category = weather_name.text.toString()
 
-            db.collection(id)
-                .whereEqualTo("服裝種類", category)
-                .orderBy(FieldPath.documentId(), Query.Direction.DESCENDING)
-                .limit(1)
-                .get()
-                .addOnSuccessListener { documents ->
-                    val newDocumentName = if (documents.isEmpty) {
-                        "${category}1"  // 或者使用其他預設名稱
-                    } else {
-                        val lastDocumentName = documents.first().id
-                        val lastNumber = lastDocumentName.replace(category, "").toIntOrNull() ?: 0
-                        "$category${lastNumber + 1}"
+            if (email != null) {
+                db.collection(email)
+                    .whereEqualTo("服裝種類", category)
+                    .orderBy(FieldPath.documentId(), Query.Direction.DESCENDING)
+                    .limit(1)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        val newDocumentName = if (documents.isEmpty) {
+                            "${category}1"  // 或者使用其他預設名稱
+                        } else {
+                            val lastDocumentName = documents.first().id
+                            val lastNumber = lastDocumentName.replace(category, "").toIntOrNull() ?: 0
+                            "$category${lastNumber + 1}"
+                        }
+
+                        val user = hashMapOf(
+                            "服裝種類" to category,
+                            "天氣種類" to weather_category,
+                            "圖片網址" to imageUrl,
+                            "標籤" to labelTexts
+                        )
+
+                        db.collection(email)
+                            .document(newDocumentName)
+                            .set(user)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "新增完成", Toast.LENGTH_LONG).show()
+                                startActivity(Intent(this, home::class.java))
+                                finish()
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("New_clothes", "新增失敗: ${e.message}")
+                                Toast.makeText(this, "新增失敗: ${e.message}", Toast.LENGTH_LONG).show()
+                            }
                     }
-
-                    val user = hashMapOf(
-                        "服裝種類" to category,
-                        "天氣種類" to weather_category,
-                        "圖片網址" to imageUrl,
-                        "標籤" to labelTexts
-                    )
-
-                    db.collection(id)
-                        .document(newDocumentName)
-                        .set(user)
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "新增完成", Toast.LENGTH_LONG).show()
-                            startActivity(Intent(this, home::class.java))
-                            finish()
-                        }
-                        .addOnFailureListener { e ->
-                            Log.e("New_clothes", "新增失敗: ${e.message}")
-                            Toast.makeText(this, "新增失敗: ${e.message}", Toast.LENGTH_LONG).show()
-                        }
-                }
-                .addOnFailureListener { e ->
-                    Log.e("New_clothes", "獲取最新文件失敗: ${e.message}")
-                    Toast.makeText(this, "獲取最新文件失敗: ${e.message}", Toast.LENGTH_LONG).show()
-                }
+                    .addOnFailureListener { e ->
+                        Log.e("New_clothes", "獲取最新文件失敗: ${e.message}")
+                        Toast.makeText(this, "獲取最新文件失敗: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+            } else {
+                Toast.makeText(this, "用戶未登入", Toast.LENGTH_LONG).show()
+            }
         } else {
             Toast.makeText(this, "用戶未登入", Toast.LENGTH_LONG).show()
         }
     }
-
-
 
 
     private fun showPopupMenu(view: View) {

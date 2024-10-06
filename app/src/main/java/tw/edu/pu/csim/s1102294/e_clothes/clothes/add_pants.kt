@@ -222,23 +222,20 @@ class add_pants : AppCompatActivity() {
     private fun loadImagesFromFirestore() {
         val imageUrls = mutableListOf<String>()
         val documentIds = mutableListOf<String>() // List to hold document IDs
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val email = FirebaseAuth.getInstance().currentUser?.email
 
-        if (userId != null) {
-            firestore.collection(userId)
+        if (!email.isNullOrEmpty()) {
+            firestore.collection(email) // Use email as the collection name
                 .get()
                 .addOnSuccessListener { documents ->
                     for (document in documents) {
-                        if (document.id.contains("褲子")) {
+                        if (document.id.contains("褲子")) { // Check if document ID contains "上衣"
                             val imageUrl = document.getString("圖片網址")
                             if (!imageUrl.isNullOrEmpty()) {
                                 imageUrls.add(imageUrl)
                                 documentIds.add(document.id) // Add the document ID to the list
                             } else {
-                                Log.d(
-                                    "Firestore",
-                                    "Empty image URL found in document: ${document.id}"
-                                )
+                                Log.d("Firestore", "Empty image URL found in document: ${document.id}")
                             }
                         }
                     }
@@ -251,6 +248,8 @@ class add_pants : AppCompatActivity() {
                 .addOnFailureListener { exception ->
                     Log.e("Firestore", "Error loading images: ${exception.message}")
                 }
+        } else {
+            Log.e("Firestore", "User email is null or empty.")
         }
     }
 }

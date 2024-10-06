@@ -154,31 +154,34 @@ class Wardrobe : AppCompatActivity() {
 
     private fun downloadImages(type: String, imageViews: List<ImageView>) {
         val db = FirebaseFirestore.getInstance()
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val currentUser = FirebaseAuth.getInstance().currentUser
 
-        if (userId != null) {
-            db.collection(userId)
-                .whereEqualTo("服裝種類", type)
-                .orderBy(FieldPath.documentId())
-                .limit(4)
-                .get()
-                .addOnSuccessListener { documents ->
-                    if (!documents.isEmpty) {
-                        var index = 0
-                        for (document in documents) {
-                            val imageUrl = document.getString("圖片網址")
-                            if (imageUrl != null && index < imageViews.size) {
-                                addImageView(imageUrl, imageViews[index])
-                                index++
+        if (currentUser != null) {
+            val email = currentUser.email
+            if (email != null) {
+                db.collection(email)
+                    .whereEqualTo("服裝種類", type)
+                    .orderBy(FieldPath.documentId())
+                    .limit(4)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        if (!documents.isEmpty) {
+                            var index = 0
+                            for (document in documents) {
+                                val imageUrl = document.getString("圖片網址")
+                                if (imageUrl != null && index < imageViews.size) {
+                                    addImageView(imageUrl, imageViews[index])
+                                    index++
+                                }
                             }
+                        } else {
+                            Log.d("Firebase", "没有找到文件")
                         }
-                    } else {
-                        Log.d("Firebase", "没有找到文件")
                     }
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("Firebase", "获取文档时出错", exception)
-                }
+                    .addOnFailureListener { exception ->
+                        Log.e("Firebase", "获取文档时出错", exception)
+                    }
+            }
         } else {
             Log.e("Firebase", "用户未登录")
         }

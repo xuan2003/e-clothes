@@ -1,16 +1,28 @@
 package tw.edu.pu.csim.s1102294.e_clothes.Community
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
+import tw.edu.pu.csim.s1102294.e_clothes.Match.Match_home
 import tw.edu.pu.csim.s1102294.e_clothes.R
+import tw.edu.pu.csim.s1102294.e_clothes.Setting
+import tw.edu.pu.csim.s1102294.e_clothes.clothes.choose_add
+import tw.edu.pu.csim.s1102294.e_clothes.home
 
 class Personal_Page : AppCompatActivity() {
+
+    lateinit var Match: ImageView
+    lateinit var Home: ImageView
+    lateinit var Friend: ImageView
+    lateinit var Clothes: ImageView
+    lateinit var set: ImageView
 
     // Declare the UI elements
     lateinit var nameTextView: TextView
@@ -66,6 +78,45 @@ class Personal_Page : AppCompatActivity() {
                 }
         } else {
             Log.w("Firestore", "User ID is null")
+        }
+
+        Home = findViewById(R.id.Home)
+        Home.setOnClickListener {
+//            Home.text = ""
+            val intent1 = Intent(this, home::class.java)
+            startActivity(intent1)
+            finish()
+        }
+
+        Match = findViewById(R.id.Match)
+        Match.setOnClickListener {
+//            Match.text = ""
+            val intent2 = Intent(this, Match_home::class.java)
+            startActivity(intent2)
+            finish()
+        }
+
+        Clothes = findViewById(R.id.Clothes)
+        Clothes.setOnClickListener {
+//            textView9.text = "123"
+//            checkPermission()
+            val intent = Intent(this, choose_add::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        Friend = findViewById(R.id.Friend)
+        Friend.setOnClickListener {
+            val intent1 = Intent(this, Personal_Page::class.java)
+            startActivity(intent1)
+            finish()
+        }
+
+        set = findViewById(R.id.set)
+        set.setOnClickListener {
+            val intent1 = Intent(this, Setting::class.java)
+            startActivity(intent1)
+            finish()
         }
     }
 }
