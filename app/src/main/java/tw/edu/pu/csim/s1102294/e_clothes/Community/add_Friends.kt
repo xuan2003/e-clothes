@@ -31,6 +31,8 @@ class add_Friends : AppCompatActivity() {
     private lateinit var friendsAdapter: FriendsAdapter
     private lateinit var auth: FirebaseAuth
 
+    lateinit var textView19: TextView
+
     class FriendsAdapter(private val friendList: List<User>) : RecyclerView.Adapter<FriendsAdapter.FriendViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
@@ -61,6 +63,8 @@ class add_Friends : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_friends)
+
+        textView19 = findViewById(R.id.textView19)
 
         Home = findViewById(R.id.Home)
         Home.setOnClickListener {
@@ -135,7 +139,8 @@ class add_Friends : AppCompatActivity() {
 
         // 設置搜尋按鈕的點擊事件
         searchFriendButton.setOnClickListener {
-            val email = searchFriendEditText.text.toString().trim()  // 使用者輸入的 email
+            val email = searchFriendEditText.text.toString().trim()
+            Log.d("SearchFriend", "Search button clicked, email: $email")
             if (email.isNotEmpty()) {
                 searchFriendByEmail(email)
             } else {
@@ -147,18 +152,20 @@ class add_Friends : AppCompatActivity() {
     private fun searchFriendByEmail(email: String) {
         val db = FirebaseFirestore.getInstance()
 
-        // 使用 email 查找文檔
-        db.collection("users") // 確保這裡是正確的集合名稱
-            .whereEqualTo("email", email) // 查詢 email 匹配的文檔
+        // Log the email being searched
+        Log.d("SearchFriend", "Searching for user with email: $email")
+
+        db.collection("users")
+            .whereEqualTo("email", email)  // Searching based on the 'email' field
             .get()
             .addOnSuccessListener { querySnapshot ->
                 if (!querySnapshot.isEmpty) {
-                    // 轉換查詢結果為 User 對象列表
-                    val friendList = querySnapshot.toObjects(User::class.java)
-                    // 更新適配器，顯示找到的用戶
-                    friendsAdapter = FriendsAdapter(friendList)
+                    val userList = querySnapshot.documents.mapNotNull { it.toObject(User::class.java) }
+                    friendsAdapter = FriendsAdapter(userList)
                     searchResultsRecyclerView.adapter = friendsAdapter
+                    Log.d("SearchFriend", "User(s) found: $userList")
                 } else {
+                    Log.d("SearchFriend", "No user found with the email")
                     Toast.makeText(this, "No user found with this email", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -167,4 +174,5 @@ class add_Friends : AppCompatActivity() {
                 Toast.makeText(this, "Failed to search", Toast.LENGTH_SHORT).show()
             }
     }
+
 }

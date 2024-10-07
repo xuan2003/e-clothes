@@ -64,11 +64,11 @@ class register : AppCompatActivity() {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val id = FirebaseAuth.getInstance().currentUser?.uid
+                    val uid = FirebaseAuth.getInstance().currentUser?.uid
                     val db = FirebaseFirestore.getInstance()
 
-                    if (id != null) {
-                        // 使用輸入的電子郵件作為 Firestore 中的鍵
+                    if (uid != null) {
+                        // 使用 uid 儲存到 "users" 集合
                         val user = hashMapOf(
                             "email" to email,
                             "頭貼圖片" to "",
@@ -78,16 +78,28 @@ class register : AppCompatActivity() {
                             "個性簽名" to ""
                         )
 
-                        db.collection(email) // 確保 "users" 為您的集合名稱
-                            .document("個人資料") // 使用電子郵件作為文檔ID
+                        // 1. 儲存到 "users" 集合
+                        db.collection("users")
+                            .document(uid)
                             .set(user)
                             .addOnSuccessListener {
-                                Toast.makeText(this, "註冊成功！請登入帳號", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, "註冊成功！", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "用戶資料儲存失敗: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+
+                        // 2. 使用 email 作為集合名稱，儲存用戶個人資料
+                        db.collection(email) // 以 email 當作集合名稱
+                            .document("個人資料")
+                            .set(user)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "用戶個人資料儲存成功！", Toast.LENGTH_SHORT).show()
                                 clearUserAuthState() // 清除用戶驗證狀態
                                 navigateToLoginScreen()
                             }
                             .addOnFailureListener { e ->
-                                Toast.makeText(this, "用戶資料儲存失敗: ${e.message}", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, "用戶個人資料儲存失敗: ${e.message}", Toast.LENGTH_SHORT).show()
                             }
                     } else {
                         Toast.makeText(this, "用户未登录", Toast.LENGTH_LONG).show()
