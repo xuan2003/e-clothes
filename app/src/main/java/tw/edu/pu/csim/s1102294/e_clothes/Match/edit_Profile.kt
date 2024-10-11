@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -14,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Friends
@@ -180,7 +182,9 @@ class edit_Profile : AppCompatActivity() {
     private fun updateProfileData(userId: String?, name: String, birthday: String, gender: String, sign: String) {
         if (userId != null) {
             val db = FirebaseFirestore.getInstance()
+            val email = FirebaseAuth.getInstance().currentUser?.email
 
+            // 更新使用者的個人資料
             val user = hashMapOf(
                 "使用者名稱" to name,
                 "生日" to birthday,
@@ -188,31 +192,57 @@ class edit_Profile : AppCompatActivity() {
                 "個性簽名" to sign
             )
 
+            // 更新個人資料
             db.collection(userId).document("個人資料")
                 .set(user)
                 .addOnSuccessListener {
-                    if (imageUri != null) {
-                        uploadImageToFirebase(imageUri!!)
-                    } else {
-                        Toast.makeText(this, "更新成功", Toast.LENGTH_LONG).show()
+                    // 更新 users 集合
+                    val userUpdate = hashMapOf(
+                        "使用者名稱" to name,
+                        "生日" to birthday,
+                        "性別" to gender,
+                        "個性簽名" to sign
+                    )
+
+                    if (email != null) {
+                        db.collection(email).document("個人資料")
+                            .set(userUpdate, SetOptions.merge()) // 使用 merge 以避免覆蓋其他欄位
+                            .addOnSuccessListener {
+                                // 若有圖片更新，則上傳圖片
+                                if (imageUri != null) {
+                                    uploadImageToFirebase(imageUri!!)
+                                } else {
+                                    Toast.makeText(this, "更新成功", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "更新 users 失敗: ${e.message}", Toast.LENGTH_LONG).show()
+                            }
                     }
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(this, "更新失败: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "更新個人資料失敗: ${e.message}", Toast.LENGTH_LONG).show()
                 }
         }
     }
+
 
     private fun uploadImageToFirebase(imageUri: Uri) {
         val storageReference = FirebaseStorage.getInstance().reference.child("profile_images/${System.currentTimeMillis()}.png")
 
         storageReference.putFile(imageUri)
             .addOnSuccessListener {
+                Log.d("EditProfile", "Image uploaded successfully")
+                // 获取下载链接
                 storageReference.downloadUrl.addOnSuccessListener { fullUrl ->
+                    Log.d("EditProfile", "Image URL: $fullUrl")
                     saveImageUrlToFirestore(fullUrl.toString())
+                }.addOnFailureListener { e ->
+                    Log.e("EditProfile", "Failed to get download URL: ${e.message}")
                 }
             }
             .addOnFailureListener { e ->
+                Log.e("EditProfile", "Image upload failed: ${e.message}")
                 Toast.makeText(this, "頭貼上傳失敗: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
@@ -222,7 +252,16 @@ class edit_Profile : AppCompatActivity() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
         if (userId != null) {
-            db.collection(userId).document("個人資料")
+            db.collection("users").document(userId)
+                .update("頭貼圖片", imageUrl)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "更新成功", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "更新失敗: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+
+            db.collection("users").document(userId)
                 .update("頭貼圖片", imageUrl)
                 .addOnSuccessListener {
                     Toast.makeText(this, "更新成功", Toast.LENGTH_SHORT).show()
