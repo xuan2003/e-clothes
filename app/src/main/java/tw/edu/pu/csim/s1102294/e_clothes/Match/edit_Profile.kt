@@ -193,7 +193,7 @@ class edit_Profile : AppCompatActivity() {
             )
 
             // 更新個人資料
-            db.collection(userId).document("個人資料")
+            db.collection("users").document(userId)
                 .set(user)
                 .addOnSuccessListener {
                     // 更新 users 集合
@@ -250,9 +250,10 @@ class edit_Profile : AppCompatActivity() {
     private fun saveImageUrlToFirestore(imageUrl: String) {
         val db = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val email = FirebaseAuth.getInstance().currentUser?.email
 
-        if (userId != null) {
-            db.collection("users").document(userId)
+        if (email != null) {
+            db.collection(email).document("個人資料")
                 .update("頭貼圖片", imageUrl)
                 .addOnSuccessListener {
                     Toast.makeText(this, "更新成功", Toast.LENGTH_SHORT).show()
@@ -261,14 +262,16 @@ class edit_Profile : AppCompatActivity() {
                     Toast.makeText(this, "更新失敗: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
 
-            db.collection("users").document(userId)
-                .update("頭貼圖片", imageUrl)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "更新成功", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "更新失敗: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
+            if (userId != null) {
+                db.collection("users").document(userId)
+                    .update("頭貼圖片", imageUrl)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "更新成功", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "更新失敗: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            }
         }
     }
 }
