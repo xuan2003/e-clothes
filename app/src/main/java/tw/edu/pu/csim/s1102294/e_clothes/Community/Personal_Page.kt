@@ -37,6 +37,7 @@ class Personal_Page : AppCompatActivity() {
         // Initialize Firestore and get the current user's ID
         val db = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val email = FirebaseAuth.getInstance().currentUser?.email
 
         // Bind UI elements to their respective views in the layout
         nameTextView = findViewById(R.id.nameTextView)
@@ -45,9 +46,9 @@ class Personal_Page : AppCompatActivity() {
         circularImageView = findViewById(R.id.circularImageView)
 
         // Ensure that userId is not null
-        if (userId != null) {
+        if (email != null) {
             // Access the "個人資料" document inside the user's Firestore collection
-            val documentRef = db.collection(userId).document("個人資料")
+            val documentRef = db.collection(email).document("個人資料")
 
             // Fetch the document and handle the response
             documentRef.get()

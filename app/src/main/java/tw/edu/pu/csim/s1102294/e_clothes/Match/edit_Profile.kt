@@ -49,12 +49,13 @@ class edit_Profile : AppCompatActivity() {
         val sign: EditText = findViewById(R.id.sign)
         val db = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val email = FirebaseAuth.getInstance().currentUser?.email
 
         circularImageView = findViewById(R.id.circularImageView)
 
         // Load user data from Firestore on page load
-        if (userId != null) {
-            val documentRef = db.collection(userId).document("個人資料")
+        if (email != null) {
+            val documentRef = db.collection(email).document("個人資料")
 
             documentRef.get()
                 .addOnSuccessListener { document ->
@@ -186,6 +187,7 @@ class edit_Profile : AppCompatActivity() {
 
             // 更新使用者的個人資料
             val user = hashMapOf(
+                "email" to email,
                 "使用者名稱" to name,
                 "生日" to birthday,
                 "性別" to gender,
@@ -198,6 +200,7 @@ class edit_Profile : AppCompatActivity() {
                 .addOnSuccessListener {
                     // 更新 users 集合
                     val userUpdate = hashMapOf(
+                        "email" to email,
                         "使用者名稱" to name,
                         "生日" to birthday,
                         "性別" to gender,
