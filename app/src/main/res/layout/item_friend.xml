@@ -16,8 +16,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/ic_launcher_foreground"
         app:shapeAppearanceOverlay="@style/CircularImageView"
-        app:strokeColor="@color/black"
-        app:strokeWidth="1dp" />
+        app:strokeColor="@color/black" />
 
     <!-- 用戶名和電子郵件容器 -->
     <LinearLayout

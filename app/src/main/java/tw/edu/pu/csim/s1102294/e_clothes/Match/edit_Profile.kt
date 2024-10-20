@@ -74,8 +74,15 @@ class edit_Profile : AppCompatActivity() {
                         sign.setText(signature ?: "")
 
                         // Load the profile image into the circular ImageView using Picasso
-                        if (profileImageUrl != null) {
-                            Picasso.get().load(profileImageUrl).into(circularImageView)
+                        if (!profileImageUrl.isNullOrEmpty()) {
+                            Picasso.get()
+                                .load(profileImageUrl)
+                                .placeholder(R.drawable.ic_launcher_foreground) // 可選的佔位符
+                                .error(R.drawable.user) // 加載失敗時顯示的圖片
+                                .into(circularImageView)
+                        } else {
+                            // URL 為空時設置預設圖片
+                            circularImageView.setImageResource(R.drawable.user)
                         }
                     }
                 }

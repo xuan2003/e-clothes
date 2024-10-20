@@ -52,36 +52,13 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="horizontal">
-
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/accept"
+                android:id="@+id/Delete"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:background="#D5CFCE"
-                android:src="@drawable/check"
+                android:layout_gravity="center"
+                android:src="@drawable/trash"
                 app:shapeAppearanceOverlay="@style/CircularImageView" />
-
-            <TextView
-                android:id="@+id/textView21"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/decline"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:background="#D5CFCE"
-                android:src="@drawable/cross"
-                app:shapeAppearanceOverlay="@style/CircularImageView" />
-
-        </LinearLayout>
     </LinearLayout>
 
     <!-- 用戶名和電子郵件容器 -->

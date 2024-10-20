@@ -80,21 +80,5 @@ class edit_Friends : AppCompatActivity() {
             popup.show()
         }
 
-        Delete = findViewById(R.id.Delete)
-        Delete.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("title")
-                .setMessage("確定刪掉他嗎?")
-                .setNegativeButton("确定") { dialog, _ ->
-                    // 可以在这里处理确定按钮的点击事件
-                    Toast.makeText(this, "刪除成功", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                }
-                .setPositiveButton("取消") { dialog, _ ->
-                    // 可以在这里处理取消按钮的点击事件
-                    dialog.dismiss()
-                }
-                .show()
-        }
     }
 }

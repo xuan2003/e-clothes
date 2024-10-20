@@ -73,30 +73,35 @@ class Friend_Invite : AppCompatActivity() {
             ) {
                 // 設定電子郵件
                 friendEmail.text = friendRequest.sender
-                // 使用發送者的電子郵件來查詢 Firestore 中的用戶詳細信息 (從 mail 集合)
-                if (friendRequest.sender != null) {
+
+                // 查詢 Firestore 中的用戶詳細信息 (從 friendRequest.sender 集合)
+                if (!friendRequest.sender.isNullOrEmpty()) {
                     db.collection(friendRequest.sender)
-                        .document("個人資料") // 使用發送者的電子郵件作為文件 ID
+                        .document("個人資料")
                         .get()
                         .addOnSuccessListener { document ->
                             if (document.exists()) {
                                 val senderName = document.getString("使用者名稱") ?: "Unknown"
                                 val senderProfileImageUrl = document.getString("頭貼圖片") ?: ""
-                                Log.e("使用者名稱",senderName)
-
 
                                 // 設定發送者的名稱
                                 friendName.text = senderName
 
-                                // 使用 Picasso 來載入頭像圖片
-                                Picasso.get()
-                                    .load(senderProfileImageUrl)
-                                    .placeholder(R.drawable.ic_launcher_foreground)
-                                    .error(R.drawable.user)
-                                    .into(friendImage)
+                                // 加載頭像圖片 (檢查 URL 是否為空)
+                                if (!senderProfileImageUrl.isNullOrEmpty()) {
+                                    Picasso.get()
+                                        .load(senderProfileImageUrl)
+                                        .placeholder(R.drawable.ic_launcher_foreground) // 可選的占位符
+                                        .error(R.drawable.user) // 頭像加載錯誤時顯示的預設圖片
+                                        .into(friendImage)
+                                } else {
+                                    // 如果 URL 為空，顯示預設圖片
+                                    friendImage.setImageResource(R.drawable.user)
+                                }
                             } else {
+                                // 如果文件不存在，顯示未知名稱和預設圖片
                                 friendName.text = "Unknown"
-                                friendImage.setImageResource(R.drawable.ic_launcher_foreground)
+                                friendImage.setImageResource(R.drawable.user)
                             }
                         }
                         .addOnFailureListener { e ->
@@ -104,6 +109,9 @@ class Friend_Invite : AppCompatActivity() {
                             friendName.text = "Error"
                             friendImage.setImageResource(R.drawable.ic_launcher_foreground)
                         }
+                } else {
+                    friendName.text = "Unknown"
+                    friendImage.setImageResource(R.drawable.user)
                 }
 
                 // 接受按鈕的點擊事件

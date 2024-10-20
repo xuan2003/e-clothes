@@ -48,17 +48,19 @@ class Other_Page : AppCompatActivity() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         val friend_email = intent.getStringExtra("email") ?: ""    //friend mail
         val profileImageUrl = intent.getStringExtra("profileImage") ?: ""
+        Log.e("頭貼", profileImageUrl)
 
         if (profileImageUrl.isNotEmpty()) {
+            // Load image using Picasso
             Picasso.get()
                 .load(profileImageUrl)
-                .placeholder(R.drawable.ic_launcher_foreground)
-                .error(R.drawable.user)
+                .placeholder(R.drawable.ic_launcher_foreground)  // Placeholder if URL is loading
+                .error(R.drawable.user)  // Error image if URL fails
                 .into(profile_image)
         } else {
-            profile_image.setImageResource(R.drawable.ic_launcher_foreground)
+            // Default image if URL is empty or null
+            profile_image.setImageResource(R.drawable.user)
         }
-
         if (userId != null) {
             // Access the "個人資料" document inside the user's Firestore collection
             val documentRef = db.collection(friend_email).document("個人資料")
@@ -72,11 +74,22 @@ class Other_Page : AppCompatActivity() {
                         val birthday = document.getString("生日")
                         val signature = document.getString("個性簽名")
                         val gender = document.getString("性別")
+                        val personalImage = document.getString("頭貼圖片")
 
                         // Display the retrieved details in the TextViews
                         nameTextView.text = "@${name ?: "Name not found"}"
                         birthdayTextView.text = "生日：${birthday ?: "Birthday not found"} _ ${gender ?: "Gender not found"}"
                         signatureTextView.text = "個性簽名：${signature ?: "Signature not found"}"
+                        if (!personalImage.isNullOrEmpty()) {
+                            Picasso.get()
+                                .load(personalImage)
+                                .placeholder(R.drawable.ic_launcher_foreground)  // Show this while loading
+                                .error(R.drawable.user)  // Show this if the image URL is invalid
+                                .into(profile_image)
+                        } else {
+                            // Set a default image if the URL is empty or null
+                            profile_image.setImageResource(R.drawable.user)
+                        }
                     } else {
                         Log.d("Firestore", "Document does not exist")
                     }
@@ -91,17 +104,26 @@ class Other_Page : AppCompatActivity() {
         add_friend = findViewById(R.id.add_friend)
         val currentUserEmail = auth.currentUser?.email
 
-        // Check if a friend request already exists
+        // Check if already friends
         if (currentUserEmail != null) {
-            checkFriendRequestExists(currentUserEmail, friend_email) { exists ->
-                if (exists) {
-                    // Friend request already sent
+            checkIfFriends(currentUserEmail, friend_email) { areFriends ->
+                if (areFriends) {
+                    // Already friends
                     add_friend.isEnabled = false
-                    add_friend.text = "已發送好友邀請"
+                    add_friend.text = "已成為好友"
                 } else {
-                    // No friend request sent, enable the button
-                    add_friend.isEnabled = true
-                    add_friend.text = "發送好友邀請"
+                    // Check if a friend request already exists
+                    checkFriendRequestExists(currentUserEmail, friend_email) { exists ->
+                        if (exists) {
+                            // Friend request already sent
+                            add_friend.isEnabled = false
+                            add_friend.text = "已發送好友邀請"
+                        } else {
+                            // No friend request sent, enable the button
+                            add_friend.isEnabled = true
+                            add_friend.text = "發送好友邀請"
+                        }
+                    }
                 }
             }
         }
@@ -167,6 +189,25 @@ class Other_Page : AppCompatActivity() {
                 Log.w("Firestore", "Error checking friend request: ", e)
                 callback(false)  // 如果出現錯誤，默認返回 false
             }
+    }
+
+    private fun checkIfFriends(userEmail: String, friendEmail: String, callback: (Boolean) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        val currentUserEmail = auth.currentUser?.email
+
+        // 檢查兩個用戶是否已成為好友
+        if (currentUserEmail != null) {
+            db.collection("users").document(currentUserEmail)
+                .collection("friends")
+                .get()
+                .addOnSuccessListener { documents ->
+                    callback(documents.size() > 0)  // 如果查詢結果的大小大於0，表示已成為好友
+                }
+                .addOnFailureListener { e ->
+                    Log.w("Firestore", "Error checking friends: ", e)
+                    callback(false)  // 如果出現錯誤，默認返回 false
+                }
+        }
     }
 
     private fun sendFriendRequest(sender: String, receiver: String) {

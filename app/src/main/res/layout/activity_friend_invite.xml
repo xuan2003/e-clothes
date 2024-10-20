@@ -61,7 +61,7 @@
         android:textSize="15dp" />
 
     <View
-        android:id="@+id/view"
+        android:id="@+id/view1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#AAA09E" />
@@ -70,7 +70,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_margin="20dp"
         android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
