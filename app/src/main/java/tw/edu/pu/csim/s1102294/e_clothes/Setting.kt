@@ -3,12 +3,16 @@ package tw.edu.pu.csim.s1102294.e_clothes
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
+import com.google.firebase.auth.FirebaseUser
 import tw.edu.pu.csim.s1102294.e_clothes.Community.Liked_Post
 //import tw.edu.pu.csim.s1102294.e_clothes.Community.Liked_Post
 import tw.edu.pu.csim.s1102294.e_clothes.Match.edit_Chosen_Match
@@ -102,7 +106,8 @@ class Setting : AppCompatActivity() {
                         }
                         .setNegativeButton("是") { dialog2, _ ->
                             dialog2.dismiss()
-                            val intent = Intent(this, MainActivity::class.java) // 更換為您的目標Activity
+                            deleteAccount()
+                            val intent = Intent(this, login::class.java) // 更換為您的目標Activity
                             startActivity(intent)
                         }
                         .show()
@@ -120,4 +125,25 @@ class Setting : AppCompatActivity() {
         finish()
     }
 
+    private fun deleteAccount() {
+        val user = FirebaseAuth.getInstance().currentUser
+
+        user?.let {
+            // 刪除帳號
+            it.delete().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "帳號已刪除", Toast.LENGTH_SHORT).show()
+                    Log.d("DeleteAccount", "User account deleted.")
+                    // 帳號刪除後，可以重定向到登入頁面或其他頁面
+                } else {
+                    // 如果需要重新驗證
+                    Toast.makeText(this, "帳號刪除失敗，可能需要重新驗證", Toast.LENGTH_SHORT).show()
+                    Log.e("DeleteAccount", "Failed to delete user", task.exception)
+                }
+            }
+        } ?: run {
+            // 如果當前沒有使用者登入
+            Toast.makeText(this, "尚未登入", Toast.LENGTH_SHORT).show()
+        }
+    }
 }
