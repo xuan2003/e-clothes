@@ -20,16 +20,17 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import tw.edu.pu.csim.s1102294.e_clothes.Match.Match_home
 import tw.edu.pu.csim.s1102294.e_clothes.R
+import tw.edu.pu.csim.s1102294.e_clothes.Setting
+import tw.edu.pu.csim.s1102294.e_clothes.clothes.choose_add
 import tw.edu.pu.csim.s1102294.e_clothes.home
 
 class Friend_Invite : AppCompatActivity() {
 
     lateinit var Home: ImageView
     lateinit var Match: ImageView
-    lateinit var New_Clothes: ImageView
+    lateinit var Clothes: ImageView
     lateinit var Friend: ImageView
-    lateinit var accept: ImageView
-    lateinit var decline: ImageView
+    lateinit var set: ImageView
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
@@ -167,11 +168,22 @@ class Friend_Invite : AppCompatActivity() {
             finish()
         }
 
+        Clothes = findViewById(R.id.Clothes)
+        Clothes.setOnClickListener {
+            startActivity(Intent(this, choose_add::class.java))
+            finish()
+        }
+
         Friend = findViewById(R.id.Friend)
         Friend.setOnClickListener {
 //            Home.text = ""
             val intent1 = Intent(this, Friends::class.java)
             startActivity(intent1)
+            finish()
+        }
+        set = findViewById(R.id.set)
+        set.setOnClickListener {
+            startActivity(Intent(this, Setting::class.java))
             finish()
         }
 

@@ -24,6 +24,7 @@ import tw.edu.pu.csim.s1102294.e_clothes.Community.Personal_Page
 import tw.edu.pu.csim.s1102294.e_clothes.R
 import tw.edu.pu.csim.s1102294.e_clothes.Setting
 import tw.edu.pu.csim.s1102294.e_clothes.change_password
+import tw.edu.pu.csim.s1102294.e_clothes.clothes.choose_add
 import tw.edu.pu.csim.s1102294.e_clothes.home
 
 class edit_Profile : AppCompatActivity() {
@@ -109,6 +110,12 @@ class edit_Profile : AppCompatActivity() {
             finish()
         }
 
+        Clothes = findViewById(R.id.Clothes)
+        Clothes.setOnClickListener {
+            startActivity(Intent(this, choose_add::class.java))
+            finish()
+        }
+
         Friend = findViewById(R.id.Friend)
         Friend.setOnClickListener {
             startActivity(Intent(this, Friends::class.java))
@@ -117,7 +124,7 @@ class edit_Profile : AppCompatActivity() {
 
         Personal_page = findViewById(R.id.Personal_page)
         Personal_page.setOnClickListener {
-            startActivity(Intent(this, Personal_Page::class.java))
+            startActivity(Intent(this, Setting::class.java))
             finish()
         }
 

@@ -16,9 +16,16 @@ import com.squareup.picasso.Picasso
 import tw.edu.pu.csim.s1102294.e_clothes.Match.Match_home
 import tw.edu.pu.csim.s1102294.e_clothes.R
 import tw.edu.pu.csim.s1102294.e_clothes.Setting
+import tw.edu.pu.csim.s1102294.e_clothes.clothes.choose_add
 import tw.edu.pu.csim.s1102294.e_clothes.home
 
 class add_Friends : AppCompatActivity() {
+
+    private lateinit var matchButton: ImageView
+    private lateinit var homeButton: ImageView
+    private lateinit var friendButton: ImageView
+    private lateinit var clothesButton: ImageView
+    private lateinit var settingsButton: ImageView
 
     private lateinit var searchFriendEditText: EditText
     private lateinit var searchFriendButton: Button
@@ -29,6 +36,36 @@ class add_Friends : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_friends)
+
+        homeButton = findViewById(R.id.Home)
+        homeButton.setOnClickListener {
+            startActivity(Intent(this, home::class.java))
+            finish()
+        }
+
+        matchButton = findViewById(R.id.Match)
+        matchButton.setOnClickListener {
+            startActivity(Intent(this, Match_home::class.java))
+            finish()
+        }
+
+        clothesButton = findViewById(R.id.Clothes)
+        clothesButton.setOnClickListener {
+            startActivity(Intent(this, choose_add::class.java))
+            finish()
+        }
+
+        friendButton = findViewById(R.id.Friend)
+        friendButton.setOnClickListener {
+            startActivity(Intent(this, Friends::class.java))
+            finish()
+        }
+
+        settingsButton = findViewById(R.id.set)
+        settingsButton.setOnClickListener {
+            startActivity(Intent(this, Setting::class.java))
+            finish()
+        }
 
         // Initialize views
         searchFriendEditText = findViewById(R.id.searchFriendEditText)
@@ -50,6 +87,35 @@ class add_Friends : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "請輸入Email", Toast.LENGTH_SHORT).show()
             }
+        }
+        val menuCatch = findViewById<ImageView>(R.id.menu_friend)
+        menuCatch.setOnClickListener {
+            val popup = PopupMenu(this, menuCatch)
+            popup.menuInflater.inflate(R.menu.menu_friends, popup.menu)
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.add -> {
+                        Toast.makeText(this, "新增好友", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this, add_Friends::class.java))
+                        finish()
+                        true
+                    }
+                    R.id.edit -> {
+                        Toast.makeText(this, "編輯好友", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this, edit_Friends::class.java))
+                        finish()
+                        true
+                    }
+                    R.id.invit -> {
+                        Toast.makeText(this, "查看好友邀請", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this, Friend_Invite::class.java))
+                        finish()
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
         }
     }
 
