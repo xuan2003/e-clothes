@@ -6,13 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="10dp"
-        android:background="#AAA09E" />
-
     <!-- 朋友的頭貼圖片 -->
     <LinearLayout
         android:layout_width="match_parent"

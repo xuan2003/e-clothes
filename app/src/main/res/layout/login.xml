@@ -76,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:text="輸入你的用戶名稱"
+                android:text="輸入你的電子信箱"
                 android:textColor="@color/black"
                 android:textSize="15dp" />
 

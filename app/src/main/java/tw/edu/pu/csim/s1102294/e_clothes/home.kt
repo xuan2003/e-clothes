@@ -28,10 +28,19 @@ import tw.edu.pu.csim.s1102294.e_clothes.weather.RetrofitClient
 import tw.edu.pu.csim.s1102294.e_clothes.weather.WeatherResponse
 import tw.edu.pu.csim.s1102294.e_clothes.weather.WeatherService
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import tw.edu.pu.csim.s1102294.e_clothes.Match.Match
+import tw.edu.pu.csim.s1102294.e_clothes.Match.Matching_details
 import tw.edu.pu.csim.s1102294.e_clothes.Match.edit_Profile
 import tw.edu.pu.csim.s1102294.e_clothes.clothes.choose_add
 import tw.edu.pu.csim.s1102294.e_clothes.weather.Time
@@ -40,6 +49,53 @@ import java.util.*
 
 
 class home : AppCompatActivity() {
+
+    // Inner adapter class for match list
+    class MatchAdapter(private var matchList: List<Match>) : RecyclerView.Adapter<MatchAdapter.MatchViewHolder>() {
+
+        inner class MatchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            private val matchNameTextView: TextView = itemView.findViewById(R.id.match_name)
+            private val weatherCategoryTextView: TextView = itemView.findViewById(R.id.weather_category)
+            private val hatImageView: ImageView = itemView.findViewById(R.id.hat_image)
+            private val clothesImageView: ImageView = itemView.findViewById(R.id.clothes_image)
+            private val pantsImageView: ImageView = itemView.findViewById(R.id.pants_image)
+            private val shoesImageView: ImageView = itemView.findViewById(R.id.shoes_image)
+
+            fun bind(match: Match) {
+                matchNameTextView.text = match.搭配名稱
+                weatherCategoryTextView.text = match.天氣種類
+
+                // Load images
+                Glide.with(itemView.context).load(match.帽子圖片網址).into(hatImageView)
+                Glide.with(itemView.context).load(match.上衣圖片網址).into(clothesImageView)
+                Glide.with(itemView.context).load(match.褲子圖片網址).into(pantsImageView)
+                Glide.with(itemView.context).load(match.鞋子圖片網址).into(shoesImageView)
+
+                itemView.setOnClickListener {
+                    val intent = Intent(itemView.context, Matching_details::class.java)
+                    intent.putExtra("matchData", match)  // Serializable or Parcelable
+                    itemView.context.startActivity(intent)
+                }
+            }
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.match_item, parent, false)
+            return MatchViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: MatchViewHolder, position: Int) {
+            holder.bind(matchList[position])
+        }
+
+        override fun getItemCount(): Int = matchList.size
+
+        fun updateMatches(newMatches: List<Match>) {
+            matchList = newMatches
+            notifyDataSetChanged()
+        }
+    }
+
     lateinit var Match: ImageView
     lateinit var Home: ImageView
     lateinit var Friend: ImageView
@@ -79,6 +135,10 @@ class home : AppCompatActivity() {
 //    }
 
     lateinit var textView8: TextView
+    private val matchList = mutableListOf<Match>()
+    private lateinit var matchRecyclerView: RecyclerView
+    private lateinit var matchAdapter: Match_home.MatchAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -198,6 +258,56 @@ class home : AppCompatActivity() {
         weatherService = RetrofitClient.myWeatherApi().create(WeatherService::class.java)
         locationCity = locationTextView.text.toString().trim()
 //        getWeather(locationCity)
+
+        matchRecyclerView = findViewById(R.id.match_recycler_view)
+        matchRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        // Initialize the adapter with an empty list
+        matchAdapter = Match_home.MatchAdapter(emptyList())
+        matchRecyclerView.adapter = matchAdapter
+
+        // Fetch the "搭配" data from Firestore
+        fetchMatchDataFromFirestore()
+
+    }
+
+    private fun fetchMatchDataFromFirestore() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val email = currentUser.email
+            val db = FirebaseFirestore.getInstance()
+
+            if (email != null) {
+                db.collection(email)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        if (documents.isEmpty) {
+                            Log.e("Firestore", "No documents found!")
+                        } else {
+                            // Process and filter only valid match data
+                            for (document in documents) {
+                                val match = document.toObject(tw.edu.pu.csim.s1102294.e_clothes.Match.Match::class.java)
+
+                                // Check if the match object has the required fields
+                                if (match.isValid()) {
+                                    Log.d("MatchData", "Match: $match")  // 输出数据检查
+                                    matchList.add(match)
+                                } else {
+                                    Log.d("MatchData", "Invalid match: $match")  // 输出无效数据检查
+                                }
+                            }
+
+                            // Update UI with the fetched matches
+                            runOnUiThread {
+                                matchAdapter.updateMatches(matchList)
+                            }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("MatchActivity", "Error fetching data: ${e.message}")
+                    }
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(

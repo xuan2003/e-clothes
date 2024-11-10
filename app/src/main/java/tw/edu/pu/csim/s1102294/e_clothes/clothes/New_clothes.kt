@@ -225,9 +225,8 @@ class New_clothes : AppCompatActivity() {
                         val relativePath =
                             "/" + fullUrl.substringAfter("/o/").substringBefore("?alt=media")
                                 .replace("%2F", "/")
-                        imageUrl =
-                            relativePath  // Now `imageUrl` stores the cleaned relative path with a leading /
-                        saveDataToFirestore(db)   // Proceed to save the data to Firestore
+                        imageUrl = relativePath  // Now `imageUrl` stores the cleaned relative path with a leading /
+                        saveDataToFirestore(db, fullUrl)   // Pass the fullUrl here to save it to Firestore
                     }, onFailure = { e ->
                         Toast.makeText(this, "上傳失敗: ${e.message}", Toast.LENGTH_LONG).show()
                     })
@@ -238,8 +237,6 @@ class New_clothes : AppCompatActivity() {
                 Toast.makeText(this, "加載失敗", Toast.LENGTH_SHORT).show()
             }
         }
-
-
 
         previous = findViewById(R.id.previous)
         previous.setOnClickListener {
@@ -313,14 +310,12 @@ class New_clothes : AppCompatActivity() {
         builder.show()
     }
 
-    private fun saveDataToFirestore(db: FirebaseFirestore) {
+    private fun saveDataToFirestore(db: FirebaseFirestore, fullUrl: String) {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
-            // 使用電子郵件地址作為文檔ID
             val email = currentUser.email
             val category = Classification_name.text.toString()
-            Log.d("New_clothes", "Attempting to save category: $category")
-            val weather_category = weather_name.text.toString()
+            val weatherCategory = weather_name.text.toString()
 
             if (email != null) {
                 db.collection(email)
@@ -330,7 +325,7 @@ class New_clothes : AppCompatActivity() {
                     .get()
                     .addOnSuccessListener { documents ->
                         val newDocumentName = if (documents.isEmpty) {
-                            "${category}1"  // 或者使用其他預設名稱
+                            "${category}1"
                         } else {
                             val lastDocumentName = documents.first().id
                             val lastNumber = lastDocumentName.replace(category, "").toIntOrNull() ?: 0
@@ -339,8 +334,9 @@ class New_clothes : AppCompatActivity() {
 
                         val user = hashMapOf(
                             "服裝種類" to category,
-                            "天氣種類" to weather_category,
+                            "天氣種類" to weatherCategory,
                             "圖片網址" to imageUrl,
+                            "圖片完整網址" to fullUrl,  // Store the full URL here
                             "標籤" to labelTexts
                         )
 

@@ -234,13 +234,10 @@
             android:layout_height="1dp"
             android:background="#AAA09E" />
 
-        <TextView
-            android:id="@+id/textView9"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/match_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:gravity="center"
-            android:text="目前暫無搭配"
-            android:textColor="@color/black"/>
+            android:layout_height="match_parent" />
 
 
     </LinearLayout>
