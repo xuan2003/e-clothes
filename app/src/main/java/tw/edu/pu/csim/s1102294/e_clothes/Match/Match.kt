@@ -9,9 +9,9 @@ data class Match(
     @PropertyName("帽子圖片網址") val 帽子圖片網址: String = "",
     @PropertyName("上衣圖片網址") val 上衣圖片網址: String = "",
     @PropertyName("褲子圖片網址") val 褲子圖片網址: String = "",
+    @PropertyName("圖片完整網址") val 圖片完整網址: String? = null,  // Add this if needed
     @PropertyName("鞋子圖片網址") val 鞋子圖片網址: String = "",
     @PropertyName("標籤") val 標籤: List<String>? = null,
-    @PropertyName("圖片完整網址") val 圖片完整網址: String? = null,  // Add this if needed
     @PropertyName("服裝種類") val 服裝種類: String? = null,  // Add this if needed
     @PropertyName("圖片網址") val 圖片網址: String? = null   // Add this if needed
 ) : Serializable {
@@ -25,4 +25,3 @@ data class Match(
                 鞋子圖片網址.isNotEmpty()
     }
 }
-

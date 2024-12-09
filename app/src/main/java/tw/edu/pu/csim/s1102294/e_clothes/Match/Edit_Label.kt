@@ -2,7 +2,9 @@ package tw.edu.pu.csim.s1102294.e_clothes.Match
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -150,11 +152,34 @@ class Edit_Label : AppCompatActivity(), GestureDetector.OnGestureListener {
         val shoesUrl = intent.getStringExtra("shoesUrl")
 //        val bodyPhotoUrl = intent.getStringExtra("bodyPhotoUrl")
 
+        val imageUriString = intent.getStringExtra("bodyPhotoUrl")
+        val imageBitmap = intent.getParcelableExtra<Bitmap>("capturedPhoto")
+
+// 根据传递的内容设置ImageView
+        when {
+            imageUriString != null -> {
+                val imageUri = Uri.parse(imageUriString)
+                imageUrls.add(imageUriString)  // Add the new image URL to the list
+                currentImageIndex = imageUrls.size - 1  // Update to point to the new image
+                Picasso.get().load(imageUri).into(imgDisplay) // Use Picasso to load the image from URI
+            }
+            imageBitmap != null -> {
+                // Convert the Bitmap to a file URI if necessary, and add it to the imageUrls
+                val fileUri = Uri.parse(MediaStore.Images.Media.insertImage(contentResolver, imageBitmap, "CapturedImage", ""))
+                imageUrls.add(fileUri.toString())  // Add the new image URI to the list
+                currentImageIndex = imageUrls.size - 1  // Update to point to the new image
+                imgDisplay.setImageBitmap(imageBitmap) // Display the image directly
+            }
+            else -> {
+                Toast.makeText(this, "加載失敗", Toast.LENGTH_LONG).show()
+            }
+        }
+
         imageUrls.add(hatUrl ?: "")
         imageUrls.add(clothesUrl ?: "")
         imageUrls.add(pantsUrl ?: "")
         imageUrls.add(shoesUrl ?: "")
-//        imageUrls.add(bodyPhotoUrl ?: "")
+        imageUrls.add(imageUriString ?: "")
 
         updateImage()
 
@@ -253,8 +278,8 @@ class Edit_Label : AppCompatActivity(), GestureDetector.OnGestureListener {
                         "上衣圖片網址" to clothesUrl,
                         "鞋子圖片網址" to shoesUrl,
                         "褲子圖片網址" to pantsUrl,
-                        "帽子圖片網址" to hatUrl
-//                        "身體照" to bodyPhotoUrl
+                        "帽子圖片網址" to hatUrl,
+                        "身體照" to bodyPhotoUrl
                     )
 
                     db.collection(email)

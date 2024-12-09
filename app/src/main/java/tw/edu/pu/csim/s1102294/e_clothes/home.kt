@@ -147,7 +147,7 @@ class home : AppCompatActivity() {
         textView8 = findViewById(R.id.textView8)
         profile = findViewById(R.id.profile)
         profile.setOnClickListener {
-            val intent1 = Intent(this, edit_Profile::class.java)
+            val intent1 = Intent(this, Personal_Page::class.java)
             startActivity(intent1)
             finish()
         }

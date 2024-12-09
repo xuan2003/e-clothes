@@ -86,12 +86,14 @@ class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
             intent1.putExtra("clothesUrl", clothes[currentImageIndex2])
             intent1.putExtra("pantsUrl", pants[currentImageIndex3])
             intent1.putExtra("shoesUrl", shoes[currentImageIndex4])
-//            intent1.putExtra("bodyPhotoUrl", selectedImageUri)
+            intent1.putExtra("bodyPhotoUrl", selectedImageUri)  // Pass selected image URL
 
             startActivity(intent1)
             finish()
         }
     }
+
+
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         gDetector.onTouchEvent(event)
@@ -163,15 +165,13 @@ class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             val selectedImageUri = data.data
             if (selectedImageUri != null) {
-                // Convert the URI to String
+                // Convert the URI to String and store it
                 val imageUrl = selectedImageUri.toString()
-
-                // Log the image URL using Log.e()
                 Log.e("PhotoSelection", "Selected Image URL: $imageUrl")
 
-                // Set the ImageView with the selected image
+                // Set the selected image to the body_photo ImageView
                 body_photo.setImageURI(selectedImageUri)
-                this.selectedImageUri = imageUrl // Store the image URL
+                this.selectedImageUri = imageUrl // Store the image URL for passing to the next activity
             } else {
                 Log.e("PhotoSelection", "No image URI found in the selected data")
                 Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show()
@@ -194,7 +194,6 @@ class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
                     .addOnSuccessListener { documents ->
                         hat.clear() // Clear existing URLs to prevent duplication
                         for (document in documents) {
-                            Log.d("Firestore", "Found document: ${document.id}")
                             if (document.id.contains("頭飾")) {
                                 val imageUrl = document.getString("圖片完整網址")
                                 if (!imageUrl.isNullOrEmpty()) {
@@ -245,7 +244,6 @@ class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
                     .addOnSuccessListener { documents ->
                         clothes.clear() // Clear existing URLs to prevent duplication
                         for (document in documents) {
-                            Log.d("Firestore", "Found document: ${document.id}")
                             if (document.id.contains("上衣")) {
                                 val imageUrl = document.getString("圖片完整網址")
                                 if (!imageUrl.isNullOrEmpty()) {
@@ -296,7 +294,6 @@ class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
                     .addOnSuccessListener { documents ->
                         pants.clear() // Clear existing URLs to prevent duplication
                         for (document in documents) {
-                            Log.d("Firestore", "Found document: ${document.id}")
                             if (document.id.contains("褲子")) {
                                 val imageUrl = document.getString("圖片完整網址")
                                 if (!imageUrl.isNullOrEmpty()) {
@@ -347,7 +344,6 @@ class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
                     .addOnSuccessListener { documents ->
                         shoes.clear() // Clear existing URLs to prevent duplication
                         for (document in documents) {
-                            Log.d("Firestore", "Found document: ${document.id}")
                             if (document.id.contains("鞋子")) {
                                 val imageUrl = document.getString("圖片完整網址")
                                 if (!imageUrl.isNullOrEmpty()) {
@@ -383,4 +379,5 @@ class New_Match : AppCompatActivity(), GestureDetector.OnGestureListener {
                 })
         }
     }
+
 }
